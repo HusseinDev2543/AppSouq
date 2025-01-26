@@ -32,6 +32,27 @@
             object-fit: cover;
             border-radius: 10px;
         }
+        .screenshot {
+            max-width: 100%;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        #progressBar {
+            height: 20px;
+            background-color: #007BFF;
+            width: 0;
+            border-radius: 10px;
+        }
+        #loadingText {
+            margin-top: 10px;
+        }
+        .error-message {
+            background-color: #ffcccc;
+            color: #ff0000;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -65,7 +86,21 @@
             <img id="appIcon" class="app-icon mb-3" src="" alt="أيقونة التطبيق">
             <h2 id="appName" class="text-primary fw-bold mb-3"></h2>
             <p id="appDescription" class="text-muted"></p>
-            <a id="downloadButton" href="#" class="btn btn-primary w-50 rounded-pill" download>تحميل التطبيق</a>
+            <a id="downloadButton" href="#" class="btn btn-primary w-50 rounded-pill">تحميل التطبيق</a>
+            
+            <!-- قسم صور السكرين شوت -->
+            <div id="screenshotsSection" class="mt-4">
+                <h5 class="text-primary mb-3">صور التطبيق</h5>
+                <div id="screenshotsContainer" class="d-flex flex-wrap justify-content-center"></div>
+            </div>
+            
+            <div id="loadingSection" class="mt-4" style="display: none;">
+                <div id="progressBar"></div>
+                <p id="loadingText" class="text-muted">جاري تحميل التطبيق...</p>
+            </div>
+            <div id="errorMessage" class="error-message mt-3">
+                <strong>خطأ:</strong> الملف معطوب أو غير موجود.
+            </div>
         </div>
     </section>
 
@@ -73,6 +108,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script>
         // إعداد Firebase
         const firebaseConfig = {
@@ -87,32 +123,95 @@
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const auth = firebase.auth();
 
-        // الحصول على معرف التطبيق من الرابط
-        const urlParams = new URLSearchParams(window.location.search);
-        const appId = urlParams.get('appId');
+        // التحقق من تسجيل دخول المستخدم والحصول على الـ UID
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                const userUid = user.uid; // جلب الـ UID الخاص بالمستخدم
+                const urlParams = new URLSearchParams(window.location.search);
+                const appId = urlParams.get('appId');
 
-        if (appId) {
-            // جلب بيانات التطبيق من Firebase
-            database.ref('apps/' + appId).once('value').then((snapshot) => {
-                const appData = snapshot.val();
-                if (appData) {
-                    document.getElementById('appName').textContent = appData.name;
-                    document.getElementById('appIcon').src = appData.iconUrl;
-                    document.getElementById('appDescription').textContent = appData.description;
-                    document.getElementById('downloadButton').href = appData.fileUrl;
+                if (appId) {
+                    // جلب بيانات التطبيق من Firebase بناءً على الـ UID
+                    database.ref('apps/' + userUid + '/' + appId).once('value').then((snapshot) => {
+                        const appData = snapshot.val();
+                        if (appData) {
+                            document.getElementById('appName').textContent = appData.name;
+                            document.getElementById('appIcon').src = appData.iconUrl;
+                            document.getElementById('appDescription').textContent = appData.description;
+                            document.getElementById('downloadButton').href = appData.fileUrl;
+
+                            // التحقق من صحة الرابط
+                            const fileUrl = appData.fileUrl;
+                            fetch(fileUrl, { method: 'HEAD' }).then(response => {
+                                if (response.ok) {
+                                    // إذا كان الرابط صحيحًا، لا تظهر رسالة الخطأ
+                                    document.getElementById('errorMessage').style.display = 'none';
+                                } else {
+                                    // إذا كان الرابط غير صحيح، إظهار رسالة الخطأ
+                                    document.getElementById('errorMessage').style.display = 'block';
+                                }
+                            }).catch(() => {
+                                // في حالة حدوث خطأ في الاتصال بالخادم، إظهار رسالة الخطأ
+                                document.getElementById('errorMessage').style.display = 'block';
+                            });
+
+                            // عرض صور السكرين شوت
+                            const screenshots = appData.screenshots || [];
+                            const screenshotsContainer = document.getElementById('screenshotsContainer');
+                            screenshotsContainer.innerHTML = ''; // إفراغ الصور القديمة
+
+                            screenshots.forEach((url) => {
+                                const img = document.createElement('img');
+                                img.src = url;
+                                img.className = 'screenshot';
+                                screenshotsContainer.appendChild(img);
+                            });
+                        } else {
+                            alert('التطبيق غير موجود!');
+                            window.location.href = 'index.html';
+                        }
+                    }).catch((error) => {
+                        alert('حدث خطأ أثناء تحميل بيانات التطبيق: ' + error.message);
+                        window.location.href = 'index.html';
+                    });
                 } else {
-                    alert('التطبيق غير موجود!');
+                    alert('معرف التطبيق مفقود!');
                     window.location.href = 'index.html';
                 }
-            }).catch((error) => {
-                alert('حدث خطأ أثناء تحميل بيانات التطبيق: ' + error.message);
-                window.location.href = 'index.html';
-            });
-        } else {
-            alert('معرف التطبيق مفقود!');
-            window.location.href = 'index.html';
-        }
+            } else {
+                alert('يجب تسجيل الدخول للوصول إلى هذه الصفحة!');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // إضافة الحدث لزر التحميل
+        document.getElementById('downloadButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // التحقق من وجود رسالة الخطأ
+            if (document.getElementById('errorMessage').style.display === 'none') {
+                // إخفاء زر التحميل
+                document.getElementById('downloadButton').style.display = 'none';
+
+                // إظهار شريط التحميل
+                document.getElementById('loadingSection').style.display = 'block';
+                let progress = 0;
+                const interval = setInterval(function() {
+                    progress += 10;
+                    document.getElementById('progressBar').style.width = progress + '%';
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        // بدء تحميل التطبيق
+                        window.location.href = document.getElementById('downloadButton').href; // تحميل الملف الفعلي
+                    }
+                }, 500); // زيادة التقدم كل نصف ثانية
+            } else {
+                // إذا كان هناك خطأ في الرابط
+                alert("الملف معطوب أو غير موجود.");
+            }
+        });
     </script>
 
 </body>
