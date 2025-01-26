@@ -83,6 +83,10 @@
                 <label for="appFile" class="form-label">ملف التطبيق</label>
                 <input type="file" class="form-control" id="appFile" required>
             </div>
+            <div class="mb-3">
+                <label for="appScreenshots" class="form-label">صور من التطبيق/اللعبة</label>
+                <input type="file" class="form-control" id="appScreenshots" multiple>
+            </div>
             <button type="submit" class="btn btn-primary w-100 rounded-pill">رفع</button>
         </form>
     </section>
@@ -143,6 +147,7 @@
             const appDescription = document.getElementById('appDescription').value;
             const appCategory = document.getElementById('appCategory').value;
             const appFile = document.getElementById('appFile').files[0];
+            const appScreenshots = document.getElementById('appScreenshots').files;
 
             const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
             loadingModal.show();
@@ -153,24 +158,52 @@
                     const fileRef = storage.ref('appFiles/' + appFile.name);
                     fileRef.put(appFile).then(() => {
                         fileRef.getDownloadURL().then((fileUrl) => {
-                            database.ref('apps').push({
-                                uid: user.uid,  // ربط التطبيق مع المستخدم
-                                name: appName,
-                                iconUrl: iconUrl,
-                                description: appDescription,
-                                category: appCategory,
-                                fileUrl: fileUrl
-                            }).then(() => {
-                                alert('تم رفع التطبيق بنجاح!');
-                                uploadForm.reset();
-                                loadingModal.hide();
+                            const screenshotsUrls = [];
+                            const screenshotPromises = [];
+                            for (let i = 0; i < appScreenshots.length; i++) {
+                                const screenshotRef = storage.ref('appScreenshots/' + appScreenshots[i].name);
+                                screenshotPromises.push(screenshotRef.put(appScreenshots[i]).then(() => {
+                                    return screenshotRef.getDownloadURL();
+                                }));
+                            }
+
+                            Promise.all(screenshotPromises).then((screenshots) => {
+                                screenshotsUrls.push(...screenshots);
+                                database.ref('apps').push({
+                                    uid: user.uid,  // ربط التطبيق مع المستخدم
+                                    name: appName,
+                                    iconUrl: iconUrl,
+                                    description: appDescription,
+                                    category: appCategory,
+                                    fileUrl: fileUrl,
+                                    screenshots: screenshotsUrls // إضافة صور التطبيق
+                                }).then(() => {
+                                    loadingModal.hide();
+                                    alert('تم رفع التطبيق بنجاح!');
+                                    uploadForm.reset();
+                                }).catch((error) => {
+                                    loadingModal.hide();
+                                    alert('حدث خطأ: ' + error.message);
+                                });
                             }).catch((error) => {
-                                alert('حدث خطأ: ' + error.message);
                                 loadingModal.hide();
+                                alert('حدث خطأ أثناء رفع الصور: ' + error.message);
                             });
+                        }).catch((error) => {
+                            loadingModal.hide();
+                            alert('حدث خطأ أثناء الحصول على رابط الملف: ' + error.message);
                         });
+                    }).catch((error) => {
+                        loadingModal.hide();
+                        alert('حدث خطأ أثناء رفع الملف: ' + error.message);
                     });
+                }).catch((error) => {
+                    loadingModal.hide();
+                    alert('حدث خطأ أثناء الحصول على رابط الأيقونة: ' + error.message);
                 });
+            }).catch((error) => {
+                loadingModal.hide();
+                alert('حدث خطأ أثناء رفع الأيقونة: ' + error.message);
             });
         });
     </script>
