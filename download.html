@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,212 +7,220 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #007BFF;
+            --secondary-color: #0056b3;
+            --accent-color: #00D1FF;
+            --dark-bg: #1A1A1A;
+            --light-bg: #F8F9FA;
+            --text-color: #212529;
+        }
+
         body {
             font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(45deg, #f8f9fa 0%, #f1f3f5 100%);
+            background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
+            color: var(--text-color);
         }
+
+        .navbar {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .navbar-brand:hover {
+            color: var(--accent-color);
+        }
+
+        .navbar-nav .nav-link {
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-color);
+        }
+
         .download-section {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .download-card {
             background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.1);
+            padding: 30px;
         }
-        .btn-primary {
-            background: linear-gradient(45deg, #007BFF, #0056b3);
-            border: none;
+
+        .download-card img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 20px;
         }
-        .btn-primary:hover {
-            background: linear-gradient(45deg, #0056b3, #003f7f);
+
+        .download-card h5 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 20px;
         }
-        .app-icon {
-            width: 100px;
-            height: 100px;
+
+        .download-card .description {
+            font-size: 1rem;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .screenshot-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .screenshot-gallery img {
+            width: 200px;
+            height: 400px;
             object-fit: cover;
             border-radius: 10px;
         }
-        .screenshot {
-            max-width: 100%;
-            margin-bottom: 10px;
-            border-radius: 10px;
+
+        .developer-name {
+            font-size: 1.1rem;
+            color: #333;
+            margin-top: 15px;
         }
-        #progressBar {
-            height: 20px;
-            background-color: #007BFF;
-            width: 0;
-            border-radius: 10px;
+
+        .btn-download {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 30px;
+            transition: background 0.3s, transform 0.3s;
         }
-        #loadingText {
-            margin-top: 10px;
+
+        .btn-download:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
         }
-        .error-message {
-            background-color: #ffcccc;
-            color: #ff0000;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
+
+        .btn-download:active {
+            transform: translateY(0);
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
 </head>
-<body class="bg-light">
+<body>
 
-    <!-- شريط التنقل -->
+    <!-- شريط التنقل العلوي -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
-                <i class="fas fa-store-alt me-2"></i>
-                <span>AppSouq</span>
+            <!-- اسم التطبيق في شريط التنقل يصبح رابطًا لصفحة index.html -->
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="fas fa-store-alt me-2"></i>AppSouq
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">الرئيسية</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile.html">حسابي</a>
-                    </li>
-                </ul>
+                <ul class="navbar-nav ms-auto" id="navLinks"></ul>
             </div>
         </div>
     </nav>
 
     <!-- قسم تحميل التطبيق -->
-    <section class="download-section mt-5">
-        <div class="text-center">
-            <img id="appIcon" class="app-icon mb-3" src="" alt="أيقونة التطبيق">
-            <h2 id="appName" class="text-primary fw-bold mb-3"></h2>
-            <p id="appDescription" class="text-muted"></p>
-            <a id="downloadButton" href="#" class="btn btn-primary w-50 rounded-pill">تحميل التطبيق</a>
-            
-            <!-- قسم صور السكرين شوت -->
-            <div id="screenshotsSection" class="mt-4">
-                <h5 class="text-primary mb-3">صور التطبيق</h5>
-                <div id="screenshotsContainer" class="d-flex flex-wrap justify-content-center"></div>
+    <div class="container mt-5 pt-4 download-section">
+        <div class="download-card">
+            <img src="" id="appIcon" alt="تطبيق">
+            <h5 id="appName">اسم التطبيق</h5>
+            <p id="appDescription" class="description">وصف التطبيق</p>
+
+            <!-- معرض الصور التوضيحية -->
+            <div class="screenshot-gallery" id="screenshotGallery">
+                <!-- سيتم تحميل الصور هنا -->
             </div>
-            
-            <div id="loadingSection" class="mt-4" style="display: none;">
-                <div id="progressBar"></div>
-                <p id="loadingText" class="text-muted">جاري تحميل التطبيق...</p>
-            </div>
-            <div id="errorMessage" class="error-message mt-3">
-                <strong>خطأ:</strong> الملف معطوب أو غير موجود.
-            </div>
+
+            <p class="developer-name" id="developerName">اسم المطور</p>
+            <a href="#" id="downloadBtn" class="btn btn-download">تحميل الآن</a>
         </div>
-    </section>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script>
-        // إعداد Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAySsu-6Hgt07j4JOcjLryo-v0ECwGUIb8",
-            authDomain: "Authjk",
-            projectId: "appsouq-9714b",
-            storageBucket: "appsouq-9714b.appspot.com",
-            messagingSenderId: "437915304190",
-            appId: "1:437915304190:android:e28af3f65c55e1c60ae5af",
-            databaseURL: "https://appsouq-9714b-default-rtdb.firebaseio.com"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
         const auth = firebase.auth();
+        const db = firebase.database();
+        const appIcon = document.getElementById('appIcon');
+        const appName = document.getElementById('appName');
+        const appDescription = document.getElementById('appDescription');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const screenshotGallery = document.getElementById('screenshotGallery');
+        const developerName = document.getElementById('developerName');
 
-        // التحقق من تسجيل دخول المستخدم والحصول على الـ UID
-        firebase.auth().onAuthStateChanged(function(user) {
+        const appId = new URLSearchParams(window.location.search).get('appId');
+
+        // تحديث حالة المستخدم في شريط التنقل
+        auth.onAuthStateChanged((user) => {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.innerHTML = ''; 
+
             if (user) {
-                const userUid = user.uid; // جلب الـ UID الخاص بالمستخدم
-                const urlParams = new URLSearchParams(window.location.search);
-                const appId = urlParams.get('appId');
-
-                if (appId) {
-                    // جلب بيانات التطبيق من Firebase بناءً على الـ UID
-                    database.ref('apps/' + userUid + '/' + appId).once('value').then((snapshot) => {
-                        const appData = snapshot.val();
-                        if (appData) {
-                            document.getElementById('appName').textContent = appData.name;
-                            document.getElementById('appIcon').src = appData.iconUrl;
-                            document.getElementById('appDescription').textContent = appData.description;
-                            document.getElementById('downloadButton').href = appData.fileUrl;
-
-                            // التحقق من صحة الرابط
-                            const fileUrl = appData.fileUrl;
-                            fetch(fileUrl, { method: 'HEAD' }).then(response => {
-                                if (response.ok) {
-                                    // إذا كان الرابط صحيحًا، لا تظهر رسالة الخطأ
-                                    document.getElementById('errorMessage').style.display = 'none';
-                                } else {
-                                    // إذا كان الرابط غير صحيح، إظهار رسالة الخطأ
-                                    document.getElementById('errorMessage').style.display = 'block';
-                                }
-                            }).catch(() => {
-                                // في حالة حدوث خطأ في الاتصال بالخادم، إظهار رسالة الخطأ
-                                document.getElementById('errorMessage').style.display = 'block';
-                            });
-
-                            // عرض صور السكرين شوت
-                            const screenshots = appData.screenshots || [];
-                            const screenshotsContainer = document.getElementById('screenshotsContainer');
-                            screenshotsContainer.innerHTML = ''; // إفراغ الصور القديمة
-
-                            screenshots.forEach((url) => {
-                                const img = document.createElement('img');
-                                img.src = url;
-                                img.className = 'screenshot';
-                                screenshotsContainer.appendChild(img);
-                            });
-                        } else {
-                            alert('التطبيق غير موجود!');
-                            window.location.href = 'index.html';
-                        }
-                    }).catch((error) => {
-                        alert('حدث خطأ أثناء تحميل بيانات التطبيق: ' + error.message);
-                        window.location.href = 'index.html';
-                    });
-                } else {
-                    alert('معرف التطبيق مفقود!');
-                    window.location.href = 'index.html';
-                }
+                navLinks.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="#">تطبيقاتي</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">حسابي</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">تسجيل الخروج</a></li>
+                    <li class="nav-item"><a class="nav-link" href="upload.html">رفع تطبيق</a></li>
+                `;
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    auth.signOut().then(() => window.location.reload());
+                });
             } else {
-                alert('يجب تسجيل الدخول للوصول إلى هذه الصفحة!');
-                window.location.href = 'login.html';
+                navLinks.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="login.html">تسجيل الدخول</a></li>
+                    <li class="nav-item"><a class="nav-link" href="signup.html">إنشاء حساب</a></li>
+                `;
             }
         });
 
-        // إضافة الحدث لزر التحميل
-        document.getElementById('downloadButton').addEventListener('click', function(event) {
-            event.preventDefault();
-            
-            // التحقق من وجود رسالة الخطأ
-            if (document.getElementById('errorMessage').style.display === 'none') {
-                // إخفاء زر التحميل
-                document.getElementById('downloadButton').style.display = 'none';
+        // تحميل تفاصيل التطبيق
+        db.ref('apps/' + appId).on('value', (snapshot) => {
+            const app = snapshot.val();
+            if (app) {
+                appIcon.src = app.iconUrl;
+                appName.textContent = app.name;
+                appDescription.textContent = app.description;
+                developerName.textContent = `المطور: ${app.developer || 'غير محدد'}`;
+                downloadBtn.href = app.fileUrl;
 
-                // إظهار شريط التحميل
-                document.getElementById('loadingSection').style.display = 'block';
-                let progress = 0;
-                const interval = setInterval(function() {
-                    progress += 10;
-                    document.getElementById('progressBar').style.width = progress + '%';
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        // بدء تحميل التطبيق
-                        window.location.href = document.getElementById('downloadButton').href; // تحميل الملف الفعلي
-                    }
-                }, 500); // زيادة التقدم كل نصف ثانية
+                // إضافة صور الشاشات
+                if (app.screenshots && app.screenshots.length > 0) {
+                    screenshotGallery.innerHTML = app.screenshots.map(url => `
+                        <img src="${url}" alt="Screenshot">
+                    `).join('');
+                } else {
+                    screenshotGallery.innerHTML = '<p>لا توجد صور توضيحية لهذا التطبيق.</p>';
+                }
             } else {
-                // إذا كان هناك خطأ في الرابط
-                alert("الملف معطوب أو غير موجود.");
+                // في حالة عدم العثور على التطبيق
+                appName.textContent = "التطبيق غير موجود";
+                appDescription.textContent = "عذراً، لا يمكن العثور على التطبيق.";
+                developerName.textContent = "";
+                screenshotGallery.innerHTML = '<p>لا توجد صور توضيحية لهذا التطبيق.</p>';
+                downloadBtn.style.display = "none"; // إخفاء زر التحميل
             }
         });
     </script>
-
 </body>
 </html>
