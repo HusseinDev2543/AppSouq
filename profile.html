@@ -3,238 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الملف الشخصي - AppSouq</title>
-    
-    <!-- تضمين Bootstrap من CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- تضمين مكتبات Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-    
-    <!-- تضمين مكتبة jQuery و Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script src="firebase-config.js"></script>
-
-    <!-- لتنسيق الصفحة -->
+    <title>الملف الشخصي</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #007BFF;
+            --secondary-color: #0056b3;
+            --accent-color: #00D1FF;
+            --dark-bg: #1A1A1A;
+            --light-bg: #F8F9FA;
+            --text-color: #212529;
+        }
+
         body {
-            background-color: #f0f4f8;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
+            color: var(--text-color);
         }
-        .container {
-            max-width: 900px;
-            margin-top: 100px;
+
+        .navbar {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .navbar-brand:hover {
+            color: var(--accent-color);
+        }
+
+        .navbar-nav .nav-link {
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-color);
+        }
+
+        .profile-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.1);
+            text-align: center;
             padding: 30px;
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
         }
-        .profile-pic-container img {
+
+        .profile-card img {
             width: 150px;
             height: 150px;
             object-fit: cover;
             border-radius: 50%;
-            border: 4px solid #007BFF;
-            cursor: pointer;
+            margin-bottom: 20px;
         }
-        .profile-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .profile-header h2 {
-            font-size: 28px;
-            font-weight: bold;
-            color: #007BFF;
+
+        .profile-card h2 {
+            color: var(--primary-color);
             margin-bottom: 10px;
         }
-        .profile-header p {
-            font-size: 18px;
-            color: #777;
+
+        .profile-card p {
+            color: var(--text-color);
+            font-size: 1rem;
         }
-        .btn-custom {
-            background-color: #007BFF;
-            color: white;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 8px;
-        }
-        .btn-custom:hover {
-            background-color: #007BFF;
-        }
-        .modal-header, .modal-footer {
+
+        .btn-primary {
+            background: var(--primary-color);
             border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: background 0.3s, transform 0.3s;
         }
-        .modal-body input,
-        .modal-body textarea {
-            font-size: 16px;
-            border-radius: 8px;
-        }
-        .modal-body label {
-            font-weight: bold;
-        }
-        .modal-footer button {
-            font-size: 16px;
-        }
-        .modal-content {
-            border-radius: 15px;
+
+        .btn-primary:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-    <div class="container">
-        <div class="profile-header">
-            <h2>الملف الشخصي</h2>
-            <div class="profile-pic-container text-center mb-4">
-                <img id="profilePic" src="default-profile.png" alt="Profile Picture" class="img-fluid" onclick="openUploadModal()">
-                <p class="mt-2 text-muted">اضغط على الصورة لتغييرها</p>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" id="homeLink">
+                <i class="fas fa-store-alt me-2"></i>AppSouq
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="navLinks"></ul>
             </div>
         </div>
+    </nav>
 
-        <div class="text-center mb-4">
-            <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#editModal">تعديل المعلومات</button>
+    <!-- محتوى الصفحة -->
+    <main class="container">
+        <div class="profile-card">
+            <img id="profilePic" src="https://via.placeholder.com/150" alt="صورة الملف الشخصي">
+            <h2 id="userName">اسم المستخدم</h2>
+            <p id="userEmail">البريد الإلكتروني: example@example.com</p>
+            <button class="btn btn-primary" id="editProfileBtn">تعديل الملف الشخصي</button>
         </div>
+    </main>
 
-        <div class="text-center">
-            <h3 id="username">اسم المستخدم</h3>
-            <p id="email">البريد الإلكتروني</p>
-            <p id="phone">رقم الهاتف</p>
-        </div>
-    </div>
-
-    <!-- Modal لتعديل البيانات -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <!-- Dialog لتعديل الملف الشخصي -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">تعديل المعلومات</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editProfileForm">
                         <div class="mb-3">
-                            <label for="editName" class="form-label">الاسم</label>
-                            <input type="text" class="form-control" id="editName" required>
+                            <label for="newName" class="form-label">اسم المستخدم</label>
+                            <input type="text" id="newName" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label for="editPhone" class="form-label">رقم الهاتف</label>
-                            <input type="text" class="form-control" id="editPhone" required>
+                            <label for="newEmail" class="form-label">البريد الإلكتروني</label>
+                            <input type="email" id="newEmail" class="form-control" disabled> 
                         </div>
                         <div class="mb-3">
-                            <label for="editDescription" class="form-label">الوصف</label>
-                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                            <label for="newProfilePic" class="form-label">رابط الصورة الشخصية</label>
+                            <input type="text" id="newProfilePic" class="form-control">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="submit" form="editProfileForm" class="btn btn-primary">حفظ التعديلات</button>
+                    <button type="button" class="btn btn-primary" id="saveProfileBtn">حفظ التعديلات</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal لاختيار صورة الملف الشخصي -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">تغيير صورة الملف الشخصي</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="file" id="profilePicInput" accept="image/*">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="button" class="btn btn-primary" onclick="uploadProfilePic()">رفع الصورة</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="firebase-config.js"></script> <!-- رابط ملف Firebase -->
 
     <script>
         const auth = firebase.auth();
         const db = firebase.database();
-        const storage = firebase.storage();
 
-        // التحقق من حالة تسجيل الدخول
+        // إعادة التوجيه إلى الصفحة الرئيسية
+        document.getElementById('homeLink').addEventListener('click', () => {
+            window.location.href = 'Index.html';
+        });
+
         auth.onAuthStateChanged((user) => {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.innerHTML = '';
+
             if (user) {
-                db.ref('users/' + user.uid).get().then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        document.getElementById('username').innerText = userData.name;
-                        document.getElementById('email').innerText = userData.email;
-                        document.getElementById('phone').innerText = userData.phone;
-                        document.getElementById('profilePic').src = userData.profilePicUrl || 'default-profile.png';
+                const userId = user.uid;
+                db.ref('users/' + userId).once('value').then((snapshot) => {
+                    const userData = snapshot.val();
+                    if (userData) {
+                        document.getElementById('userName').textContent = userData.name || 'غير معروف';
+                        document.getElementById('userEmail').textContent = 'البريد الإلكتروني: ' + (userData.email || 'غير معروف');
+                        document.getElementById('profilePic').src = userData.profilePicUrl || 'https://via.placeholder.com/150';
                     }
                 });
+
+                navLinks.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="profile.html">الملف الشخصي</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">تسجيل الخروج</a></li>
+                `;
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    auth.signOut().then(() => window.location.reload());
+                });
             } else {
-                window.location.href = 'login.html';
+                navLinks.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="login.html">تسجيل الدخول</a></li>
+                    <li class="nav-item"><a class="nav-link" href="signup.html">إنشاء حساب</a></li>
+                `;
             }
         });
 
-        // رفع صورة الملف الشخصي
-        function uploadProfilePic() {
-            const file = document.getElementById('profilePicInput').files[0];
-            if (file) {
-                const user = auth.currentUser;
-                const storageRef = storage.ref().child('profilePics/' + user.uid);
-                const uploadTask = storageRef.put(file);
+        // عرض مربع الحوار عند الضغط على تعديل الملف الشخصي
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            const userName = document.getElementById('userName').textContent;
+            const userEmail = document.getElementById('userEmail').textContent.replace('البريد الإلكتروني: ', '');
+            const profilePic = document.getElementById('profilePic').src;
 
-                uploadTask.on('state_changed', (snapshot) => {
-                    // يمكنك إضافة مؤشر تحميل هنا إذا أردت
-                }, (error) => {
-                    alert('حدث خطأ أثناء رفع الصورة: ' + error.message);
-                }, () => {
-                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        // حفظ رابط الصورة في Firebase Realtime Database
-                        db.ref('users/' + user.uid).update({
-                            profilePicUrl: downloadURL
-                        }).then(() => {
-                            document.getElementById('profilePic').src = downloadURL;
-                            alert('تم تحديث الصورة بنجاح!');
-                        });
-                    });
+            document.getElementById('newName').value = userName;
+            document.getElementById('newEmail').value = userEmail;
+            document.getElementById('newProfilePic').value = profilePic;
+
+            const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            modal.show();
+        });
+
+        // حفظ التعديلات عند الضغط على زر الحفظ
+        document.getElementById('saveProfileBtn').addEventListener('click', () => {
+            const newName = document.getElementById('newName').value;
+            const newEmail = document.getElementById('newEmail').value;
+            const newProfilePic = document.getElementById('newProfilePic').value;
+
+            const user = auth.currentUser;
+            if (user) {
+                const userId = user.uid;
+
+                // تحديث البيانات في Firebase
+                db.ref('users/' + userId).update({
+                    name: newName,
+                    email: newEmail,
+                    profilePicUrl: newProfilePic
+                }).then(() => {
+                    // تحديث واجهة المستخدم
+                    document.getElementById('userName').textContent = newName;
+                    document.getElementById('userEmail').textContent = 'البريد الإلكتروني: ' + newEmail;
+                    document.getElementById('profilePic').src = newProfilePic;
+
+                    // إغلاق مربع الحوار
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+                    modal.hide();
+
+                    alert('تم تحديث الملف الشخصي بنجاح!');
+                }).catch((error) => {
+                    console.error('حدث خطأ أثناء تحديث الملف الشخصي:', error);
+                    alert('حدث خطأ أثناء تحديث الملف الشخصي. حاول مرة أخرى.');
                 });
             }
-        }
-
-        // فتح نافذة تغيير الصورة عند الضغط عليها
-        function openUploadModal() {
-            $('#uploadModal').modal('show');
-        }
-
-        // حفظ التعديلات على الاسم والهاتف والوصف
-        document.getElementById('editProfileForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('editName').value;
-            const phone = document.getElementById('editPhone').value;
-            const description = document.getElementById('editDescription').value;
-            const user = auth.currentUser;
-
-            db.ref('users/' + user.uid).update({
-                name: name,
-                phone: phone,
-                description: description
-            }).then(() => {
-                document.getElementById('username').innerText = name;
-                document.getElementById('phone').innerText = phone;
-                alert('تم حفظ التعديلات بنجاح!');
-                document.querySelector('[data-bs-dismiss="modal"]').click();
-            }).catch((error) => {
-                alert('حدث خطأ أثناء حفظ التعديلات: ' + error.message);
-            });
         });
     </script>
 </body>
