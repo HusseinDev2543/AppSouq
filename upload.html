@@ -26,6 +26,12 @@
         .btn-primary:hover {
             background: linear-gradient(45deg, #0056b3, #003f7f);
         }
+        .form-control, .form-select, .btn {
+            border-radius: 10px;
+        }
+        .modal-body {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -62,6 +68,10 @@
                 <input type="text" class="form-control" id="appName" placeholder="أدخل اسم التطبيق" required>
             </div>
             <div class="mb-3">
+                <label for="developerName" class="form-label">اسم المطور</label>
+                <input type="text" class="form-control" id="developerName" placeholder="أدخل اسم المطور" required>
+            </div>
+            <div class="mb-3">
                 <label for="appIcon" class="form-label">أيقونة التطبيق</label>
                 <input type="file" class="form-control" id="appIcon" required>
             </div>
@@ -85,7 +95,7 @@
             </div>
             <div class="mb-3">
                 <label for="appScreenshots" class="form-label">صور من التطبيق/اللعبة</label>
-                <input type="file" class="form-control" id="appScreenshots" multiple>
+                <input type="file" class="form-control" id="appScreenshots" multiple required>
             </div>
             <button type="submit" class="btn btn-primary w-100 rounded-pill">رفع</button>
         </form>
@@ -136,13 +146,14 @@
         uploadForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const user = auth.currentUser; // الحصول على المستخدم الحالي
+            const user = auth.currentUser;
             if (!user) {
                 alert('يجب عليك تسجيل الدخول أولاً');
                 return;
             }
 
             const appName = document.getElementById('appName').value;
+            const developerName = document.getElementById('developerName').value;
             const appIcon = document.getElementById('appIcon').files[0];
             const appDescription = document.getElementById('appDescription').value;
             const appCategory = document.getElementById('appCategory').value;
@@ -158,8 +169,8 @@
                     const fileRef = storage.ref('appFiles/' + appFile.name);
                     fileRef.put(appFile).then(() => {
                         fileRef.getDownloadURL().then((fileUrl) => {
-                            const screenshotsUrls = [];
                             const screenshotPromises = [];
+                            const screenshotsUrls = [];
                             for (let i = 0; i < appScreenshots.length; i++) {
                                 const screenshotRef = storage.ref('appScreenshots/' + appScreenshots[i].name);
                                 screenshotPromises.push(screenshotRef.put(appScreenshots[i]).then(() => {
@@ -169,9 +180,12 @@
 
                             Promise.all(screenshotPromises).then((screenshots) => {
                                 screenshotsUrls.push(...screenshots);
+
+                                // تخزين بيانات التطبيق في Firebase
                                 database.ref('apps').push({
                                     uid: user.uid,  // ربط التطبيق مع المستخدم
                                     name: appName,
+                                    developer: developerName,  // إضافة اسم المطور
                                     iconUrl: iconUrl,
                                     description: appDescription,
                                     category: appCategory,
