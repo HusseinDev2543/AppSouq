@@ -11,14 +11,12 @@
 </head>
 <body class="bg-light">
 
-    <!-- شريط التنقل العلوي -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">AppSouq</a>
         </div>
     </nav>
 
-    <!-- نموذج تسجيل الدخول -->
     <main class="container mt-5 pt-4">
         <h2 class="fw-bold text-center mb-4">تسجيل الدخول</h2>
         <form id="loginForm">
@@ -35,9 +33,12 @@
         <div class="mt-3 text-center">
             <p>ليس لديك حساب؟ <a href="signup.html">إنشاء حساب</a></p>
         </div>
+        <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
+        <div id="verificationMessage" class="alert alert-danger mt-3" style="display: none;">
+            يجب التحقق من بريدك الإلكتروني أولاً.
+        </div>
     </main>
 
-    <!-- Scripts -->
     <script>
         const auth = firebase.auth();
 
@@ -52,13 +53,22 @@
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    // التحقق إذا كان المستخدم قد تم تسجيله بنجاح
-                    alert('تم تسجيل الدخول بنجاح!');
-                    window.location.href = 'index.html'; // إعادة التوجيه إلى الصفحة الرئيسية
+
+                    // التحقق إذا كان المستخدم قد قام بتفعيل البريد الإلكتروني
+                    if (user.emailVerified) {
+                        // إذا تم تفعيل البريد الإلكتروني، يتم التوجيه للصفحة الرئيسية
+                        alert('تم تسجيل الدخول بنجاح!');
+                        window.location.href = 'index.html'; // إعادة التوجيه إلى الصفحة الرئيسية
+                    } else {
+                        // عرض رسالة التحذير في حالة عدم التحقق من البريد الإلكتروني
+                        document.getElementById('verificationMessage').style.display = 'block';
+                        auth.signOut(); // تسجيل الخروج من الجلسة
+                    }
                 })
                 .catch((error) => {
                     // في حالة حدوث خطأ، يتم عرض رسالة الخطأ
-                    alert('فشل في تسجيل الدخول: ' + error.message);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('errorMessage').textContent = 'فشل في تسجيل الدخول: ' + error.message;
                 });
         });
     </script>
