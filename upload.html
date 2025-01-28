@@ -94,8 +94,16 @@
                 <input type="file" class="form-control" id="appFile" required>
             </div>
             <div class="mb-3">
-                <label for="appScreenshots" class="form-label">صور من التطبيق/اللعبة</label>
-                <input type="file" class="form-control" id="appScreenshots" multiple required>
+                <label for="appScreenshot1" class="form-label">صورة من التطبيق/اللعبة 1</label>
+                <input type="file" class="form-control" id="appScreenshot1" required>
+            </div>
+            <div class="mb-3">
+                <label for="appScreenshot2" class="form-label">صورة من التطبيق/اللعبة 2</label>
+                <input type="file" class="form-control" id="appScreenshot2" required>
+            </div>
+            <div class="mb-3">
+                <label for="appScreenshot3" class="form-label">صورة من التطبيق/اللعبة 3</label>
+                <input type="file" class="form-control" id="appScreenshot3" required>
             </div>
             <button type="submit" class="btn btn-primary w-100 rounded-pill">رفع</button>
         </form>
@@ -158,7 +166,9 @@
             const appDescription = document.getElementById('appDescription').value;
             const appCategory = document.getElementById('appCategory').value;
             const appFile = document.getElementById('appFile').files[0];
-            const appScreenshots = document.getElementById('appScreenshots').files;
+            const appScreenshot1 = document.getElementById('appScreenshot1').files[0];
+            const appScreenshot2 = document.getElementById('appScreenshot2').files[0];
+            const appScreenshot3 = document.getElementById('appScreenshot3').files[0];
 
             const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
             loadingModal.show();
@@ -171,12 +181,16 @@
                         fileRef.getDownloadURL().then((fileUrl) => {
                             const screenshotPromises = [];
                             const screenshotsUrls = [];
-                            for (let i = 0; i < appScreenshots.length; i++) {
-                                const screenshotRef = storage.ref('appScreenshots/' + appScreenshots[i].name);
-                                screenshotPromises.push(screenshotRef.put(appScreenshots[i]).then(() => {
-                                    return screenshotRef.getDownloadURL();
-                                }));
-                            }
+
+                            // رفع الصور الثلاثة
+                            [appScreenshot1, appScreenshot2, appScreenshot3].forEach((screenshot, index) => {
+                                if (screenshot) {
+                                    const screenshotRef = storage.ref('appScreenshots/' + screenshot.name);
+                                    screenshotPromises.push(screenshotRef.put(screenshot).then(() => {
+                                        return screenshotRef.getDownloadURL();
+                                    }));
+                                }
+                            });
 
                             Promise.all(screenshotPromises).then((screenshots) => {
                                 screenshotsUrls.push(...screenshots);
