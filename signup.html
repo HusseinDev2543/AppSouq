@@ -39,6 +39,9 @@
             <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
         </div>
         <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
+        <div id="verificationMessage" class="alert alert-danger mt-3" style="display: none;">
+            يجب التحقق من بريدك الإلكتروني أولاً.
+        </div>
     </main>
 
     <script>
@@ -68,12 +71,21 @@
                     const user = userCredential.user;
                     console.log('تم إنشاء الحساب بنجاح:', user);
 
+                    // إرسال رسالة تحقق إلى البريد الإلكتروني
+                    user.sendEmailVerification()
+                        .then(() => {
+                            console.log('تم إرسال رسالة التحقق إلى البريد الإلكتروني');
+                        })
+                        .catch((error) => {
+                            console.error('فشل في إرسال رسالة التحقق:', error);
+                        });
+
                     // حفظ بيانات المستخدم في قاعدة البيانات
                     db.ref('users/' + user.uid).set({
                         name: name, // حفظ الاسم
                         email: user.email,
                         phone: "رقم الهاتف", // يمكن تركه فارغًا
-                        profilePicUrl: "" // يمكن تركه فارغًا أو إضافة صورة افتراضية
+                        profilePicUrl: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png" // يمكن تركه فارغًا أو إضافة صورة افتراضية
                     })
                     .then(() => {
                         // بعد إنشاء الحساب بنجاح، يتم إعادة التوجيه إلى صفحة تسجيل الدخول
