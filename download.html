@@ -85,13 +85,34 @@
             justify-content: center;
             gap: 15px;
             margin-top: 20px;
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .screenshot-gallery img {
-            width: 200px;
+        .screenshot-wrapper {
+            perspective: 1000px;
+        }
+
+        .screenshot {
+            width: 100%;
             height: 400px;
-            object-fit: cover;
             border-radius: 10px;
+            transition: transform 0.6s ease-in-out;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .screenshot.flip {
+            transform: rotateY(180deg);
         }
 
         .developer-name {
@@ -116,18 +137,44 @@
         .btn-download:active {
             transform: translateY(0);
         }
+
+        .downloads-count {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-top: 15px;
+        }
+
+        .comment-section {
+            margin-top: 20px;
+        }
+
+        .comment-box {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .submit-comment-btn {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-comment-btn:hover {
+            background: var(--accent-color);
+        }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="firebase-config.js"></script>
 </head>
 <body>
 
-    <!-- شريط التنقل العلوي -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
         <div class="container">
-            <!-- اسم التطبيق في شريط التنقل يصبح رابطًا لصفحة index.html -->
             <a class="navbar-brand fw-bold" href="index.html">
                 <i class="fas fa-store-alt me-2"></i>AppSouq
             </a>
@@ -135,12 +182,15 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto" id="navLinks"></ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">التطبيقات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">اتصل بنا</a></li>
+                </ul>
             </div>
         </div>
     </nav>
 
-    <!-- قسم تحميل التطبيق -->
     <div class="container mt-5 pt-4 download-section">
         <div class="download-card">
             <img src="" id="appIcon" alt="تطبيق">
@@ -148,54 +198,56 @@
             <p id="appDescription" class="description">وصف التطبيق</p>
 
             <!-- معرض الصور التوضيحية -->
-            <div class="screenshot-gallery" id="screenshotGallery">
-                <!-- سيتم تحميل الصور هنا -->
-            </div>
+            <div class="screenshot-gallery" id="screenshotGallery"></div>
 
             <p class="developer-name" id="developerName">اسم المطور</p>
+
+            <!-- عدد التحميلات -->
+            <p class="downloads-count" id="downloadsCount">عدد التحميلات: 0</p>
+
+            <!-- قسم التعليقات -->
+            <div class="comment-section">
+                <textarea class="comment-box" id="commentBox" placeholder="اكتب تعليقك هنا..."></textarea>
+                <button class="submit-comment-btn" id="submitCommentBtn">إرسال تعليق</button>
+            </div>
+
             <a href="#" id="downloadBtn" class="btn btn-download">تحميل الآن</a>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const auth = firebase.auth();
-        const db = firebase.database();
+    <!-- إضافة Firebase SDK -->
+    <script type="module">
+        // استيراد Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        
+        const firebaseConfig = {
+    apiKey: "AIzaSyAySsu-6Hgt07j4JOcjLryo-v0ECwGUIb8",
+    authDomain: "",
+    projectId: "appsouq-9714b",
+    storageBucket: "appsouq-9714b.appspot.com",
+    messagingSenderId: "437915304190",
+    appId: "1:437915304190:android:e28af3f65c55e1c60ae5af",
+    databaseURL: "https://appsouq-9714b-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
         const appIcon = document.getElementById('appIcon');
         const appName = document.getElementById('appName');
         const appDescription = document.getElementById('appDescription');
         const downloadBtn = document.getElementById('downloadBtn');
         const screenshotGallery = document.getElementById('screenshotGallery');
         const developerName = document.getElementById('developerName');
+        const downloadsCount = document.getElementById('downloadsCount');
+        const commentBox = document.getElementById('commentBox');
+        const submitCommentBtn = document.getElementById('submitCommentBtn');
 
         const appId = new URLSearchParams(window.location.search).get('appId');
 
-        // تحديث حالة المستخدم في شريط التنقل
-        auth.onAuthStateChanged((user) => {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.innerHTML = ''; 
-
-            if (user) {
-                navLinks.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="#">تطبيقاتي</a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html">حسابي</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">تسجيل الخروج</a></li>
-                    <li class="nav-item"><a class="nav-link" href="upload.html">رفع تطبيق</a></li>
-                `;
-                document.getElementById('logoutBtn').addEventListener('click', () => {
-                    auth.signOut().then(() => window.location.reload());
-                });
-            } else {
-                navLinks.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="login.html">تسجيل الدخول</a></li>
-                    <li class="nav-item"><a class="nav-link" href="signup.html">إنشاء حساب</a></li>
-                `;
-            }
-        });
-
-        // تحميل تفاصيل التطبيق
-        db.ref('apps/' + appId).on('value', (snapshot) => {
+        const appRef = ref(db, 'apps/' + appId);
+        get(appRef).then((snapshot) => {
             const app = snapshot.val();
             if (app) {
                 appIcon.src = app.iconUrl;
@@ -203,24 +255,65 @@
                 appDescription.textContent = app.description;
                 developerName.textContent = `المطور: ${app.developer || 'غير محدد'}`;
                 downloadBtn.href = app.fileUrl;
+                downloadsCount.textContent = `عدد التحميلات: ${app.downloads || 0}`;
 
-                // إضافة صور الشاشات
                 if (app.screenshots && app.screenshots.length > 0) {
-                    screenshotGallery.innerHTML = app.screenshots.map(url => `
-                        <img src="${url}" alt="Screenshot">
-                    `).join('');
+                    let currentIndex = 0;
+
+                    const updateScreenshotGallery = (screenshots) => {
+                        screenshotGallery.innerHTML = `
+                            <div class="screenshot-wrapper">
+                                <div class="screenshot" id="screenshot${currentIndex}">
+                                    <img src="${screenshots[currentIndex]}" alt="Screenshot">
+                                </div>
+                            </div>
+                        `;
+                        const screenshotElement = document.getElementById(`screenshot${currentIndex}`);
+                        screenshotElement.addEventListener('click', () => {
+                            screenshotElement.classList.add('flip');
+                            currentIndex = (currentIndex + 1) % screenshots.length; // الانتقال للصورة التالية
+                            setTimeout(() => {
+                                updateScreenshotGallery(screenshots);
+                            }, 600); // مدة تأثير القلب
+                        });
+                    };
+
+                    updateScreenshotGallery(app.screenshots);
                 } else {
                     screenshotGallery.innerHTML = '<p>لا توجد صور توضيحية لهذا التطبيق.</p>';
                 }
+
+                // إرسال تعليق
+                submitCommentBtn.addEventListener('click', () => {
+                    const userComment = commentBox.value;
+                    if (userComment) {
+                        // تخزين التعليق في قاعدة البيانات
+                        const commentRef = ref(db, 'apps/' + appId + '/comments');
+                        commentRef.push({
+                            userComment: userComment,
+                            timestamp: new Date().toISOString()
+                        });
+                        alert('تم إرسال تعليقك بنجاح!');
+                        commentBox.value = ''; // مسح الحقل بعد الإرسال
+                    } else {
+                        alert('يرجى كتابة تعليق أولاً.');
+                    }
+                });
             } else {
-                // في حالة عدم العثور على التطبيق
                 appName.textContent = "التطبيق غير موجود";
                 appDescription.textContent = "عذراً، لا يمكن العثور على التطبيق.";
                 developerName.textContent = "";
                 screenshotGallery.innerHTML = '<p>لا توجد صور توضيحية لهذا التطبيق.</p>';
-                downloadBtn.style.display = "none"; // إخفاء زر التحميل
+                downloadBtn.style.display = "none"; 
+                downloadsCount.style.display = "none";
             }
+        }).catch((error) => {
+            console.error("Error fetching app data:", error);
+            appName.textContent = "حدث خطأ";
+            appDescription.textContent = "لم نتمكن من تحميل معلومات التطبيق.";
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
