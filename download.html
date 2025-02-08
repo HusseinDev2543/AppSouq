@@ -1,270 +1,313 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحميل التطبيق - AppSouq</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #007BFF;
-            --secondary-color: #0056b3;
-            --accent-color: #00D1FF;
-            --light-bg: #F8F9FA;
-            --text-color: #212529;
-        }
-        body, html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
-            color: var(--text-color);
-        }
-        .navbar {
-            background: var(--primary-color);
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-        }
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #fff;
-            transition: color 0.3s;
-        }
-        .navbar-brand:hover {
-            color: var(--accent-color);
-        }
-        .navbar-nav .nav-link {
-            color: #fff;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        .navbar-nav .nav-link:hover {
-            color: var(--accent-color);
-        }
-        .download-card {
-            max-width: 500px;
-            width: 90%;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.1);
-            padding: 30px;
-            text-align: center;
-            margin: auto;
-        }
-        .download-card img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 20px;
-        }
-        .app-info {
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .app-info div {
-            flex: 1;
-        }
-        .info-title {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #555;
-        }
-        .info-value {
-            font-size: 1.1rem;
-            color: #333;
-            font-weight: 500;
-        }
-        .screenshot-gallery {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            gap: 10px;
-            padding: 10px;
-            justify-content: center;
-        }
-        .screenshot-gallery img {
-            max-height: 150px;
-            border-radius: 10px;
-            cursor: pointer; /* Cursor change to indicate it's clickable */
-        }
-        .btn-download {
-            background: var(--primary-color);
-            color: #fff;
-            padding: 12px 25px;
-            border-radius: 30px;
-            margin-top: 15px;
-            transition: background 0.3s, transform 0.3s;
-        }
-        .btn-download:hover {
-            background: var(--accent-color);
-            transform: translateY(-2px);
-        }
-        footer {
-            padding: 10px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #555;
-        }
-        /* Modal Style */
-        .modal-content img {
-            width: 100%;
-            max-height: 80vh;
-            object-fit: contain;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تحميل التطبيق - AppSouq</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #007BFF;    /* الأزرق الأساسي */
+      --secondary-color: #0056b3;  /* الأزرق الداكن */
+      --accent-color: #00D1FF;     /* أزرق فاتح متألق */
+      --light-bg: #F8F9FA;         /* خلفية فاتحة */
+      --text-color: #212529;       /* لون النص */
+    }
+    /* تنسيق الخلفية العام وتدرجاتها */
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
+      color: var(--text-color);
+    }
+    /* شريط التنقل */
+    .navbar {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+    }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+    .navbar-brand:hover {
+      color: var(--accent-color);
+    }
+    .navbar-nav .nav-link {
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .navbar-nav .nav-link:hover {
+      color: var(--accent-color);
+    }
+    /* بطاقة تحميل التطبيق */
+    .download-card {
+      max-width: 500px;
+      width: 90%;
+      background: #fff;
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.1);
+      padding: 30px;
+      text-align: center;
+      margin: 50px auto 20px auto;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .download-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+    }
+    .download-card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+    .download-card h5 {
+      font-size: 1.4rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    .download-card p.description {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .app-info {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .app-info div {
+      flex: 1;
+    }
+    .info-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #555;
+    }
+    .info-value {
+      font-size: 1.1rem;
+      color: #333;
+      font-weight: 500;
+    }
+    /* تنسيق اسم المطور كرابط */
+    .developer-link {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.3s;
+    }
+    .developer-link:hover {
+      color: var(--accent-color);
+    }
+    /* معرض صور الشاشات */
+    .screenshot-gallery {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 10px 0;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .screenshot-gallery img {
+      max-height: 150px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .screenshot-gallery img:hover {
+      transform: scale(1.05);
+    }
+    /* زر التحميل */
+    .btn-download {
+      background: var(--primary-color);
+      color: #fff;
+      padding: 12px 25px;
+      border-radius: 30px;
+      margin-top: 15px;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .btn-download:hover {
+      background: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    }
+    /* التذييل */
+    footer {
+      padding: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    /* تنسيق المودال الخاص بتكبير الصور */
+    .modal-content img {
+      width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+  </style>
 </head>
 <body>
-    <!-- التول بار -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="index.html">
-                <i class="fas fa-store-alt me-2"></i>AppSouq
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">الرئيسية</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">التطبيقات</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">اتصل بنا</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container mt-5 pt-5">
-        <div class="download-card">
-            <img src="" id="appIcon" alt="تطبيق">
-            <h5 id="appName">اسم التطبيق</h5>
-            <p id="appDescription" class="description">وصف التطبيق</p>
-            <!-- ترتيب جديد: المطور - التحميلات -->
-            <div class="app-info">
-                <div>
-                    <p class="info-title">المطور</p>
-                    <p class="info-value" id="developerName">غير معروف</p>
-                </div>
-                <div>
-                    <p class="info-title">التحميلات</p>
-                    <p class="info-value" id="downloadsCount">0</p>
-                </div>
-            </div>
-            <!-- معرض الصور -->
-            <div class="screenshot-gallery" id="screenshotGallery">
-                <!-- سيتم ملؤه ديناميكياً -->
-            </div>
-            <!-- زر التحميل -->
-            <a href="#" id="downloadBtn" class="btn btn-download">تحميل الآن</a>
-        </div>
+  <!-- شريط التنقل -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="fas fa-store-alt me-2"></i>AppSouq
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
+          <li class="nav-item"><a class="nav-link" href="apps.html">التطبيقات</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">اتصل بنا</a></li>
+        </ul>
+      </div>
     </div>
-    <footer>
-        © 2025 AppSouq. جميع الحقوق محفوظة.
-    </footer>
-
-    <!-- Modal for enlarging images -->
-    <div class="modal fade" id="screenshotModal" tabindex="-1" aria-labelledby="screenshotModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <img id="modalScreenshot" src="" alt="Screenshot">
-                </div>
-            </div>
+  </nav>
+  <!-- المحتوى الرئيسي -->
+  <div class="container mt-5 pt-5">
+    <div class="download-card">
+      <img src="" id="appIcon" alt="أيقونة التطبيق" />
+      <h5 id="appName">اسم التطبيق</h5>
+      <p id="appDescription" class="description">وصف التطبيق</p>
+      <!-- بيانات إضافية: المطور وعدد التحميلات -->
+      <div class="app-info">
+        <div>
+          <p class="info-title">المطور</p>
+          <!-- هنا يتم جعل اسم المطور رابط ينقل إلى بروفايل المستخدم -->
+          <p class="info-value" id="developerName">غير محدد</p>
         </div>
+        <div>
+          <p class="info-title">التحميلات</p>
+          <p class="info-value" id="downloadsCount">0</p>
+        </div>
+      </div>
+      <!-- معرض صور الشاشات -->
+      <div class="screenshot-gallery" id="screenshotGallery">
+        <!-- سيتم تعبئته ديناميكيًا -->
+      </div>
+      <!-- زر التحميل -->
+      <a href="#" id="downloadBtn" class="btn btn-download">تحميل الآن</a>
     </div>
+  </div>
+  <footer>
+    © 2025 AppSouq. جميع الحقوق محفوظة.
+  </footer>
+  <!-- مودال تكبير الصور -->
+  <div class="modal fade" id="screenshotModal" tabindex="-1" aria-labelledby="screenshotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body p-0">
+          <img id="modalScreenshot" src="" alt="تكبير الصورة" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- تحميل مكتبة Bootstrap JS أولاً -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- سكربت Firebase وجلب بيانات التطبيق -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-    <!-- Firebase Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyAySsu-6Hgt07j4JOcjLryo-v0ECwGUIb8",
+      authDomain: "",
+      projectId: "appsouq-9714b",
+      storageBucket: "appsouq-9714b.appspot.com",
+      messagingSenderId: "437915304190",
+      appId: "1:437915304190:android:e28af3f65c55e1c60ae5af",
+      databaseURL: "https://appsouq-9714b-default-rtdb.firebaseio.com"
+    };
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAySsu-6Hgt07j4JOcjLryo-v0ECwGUIb8",
-            authDomain: "",
-            projectId: "appsouq-9714b",
-            storageBucket: "appsouq-9714b.appspot.com",
-            messagingSenderId: "437915304190",
-            appId: "1:437915304190:android:e28af3f65c55e1c60ae5af",
-            databaseURL: "https://appsouq-9714b-default-rtdb.firebaseio.com"
-        };
+    const appFirebase = initializeApp(firebaseConfig);
+    const db = getDatabase(appFirebase);
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    // عناصر الصفحة
+    const appIcon = document.getElementById('appIcon');
+    const appName = document.getElementById('appName');
+    const appDescription = document.getElementById('appDescription');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const screenshotGallery = document.getElementById('screenshotGallery');
+    const developerName = document.getElementById('developerName');
+    const downloadsCount = document.getElementById('downloadsCount');
+    const screenshotModal = new bootstrap.Modal(document.getElementById('screenshotModal'));
+    const modalScreenshot = document.getElementById('modalScreenshot');
 
-        const appIcon = document.getElementById('appIcon');
-        const appName = document.getElementById('appName');
-        const appDescription = document.getElementById('appDescription');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const screenshotGallery = document.getElementById('screenshotGallery');
-        const developerName = document.getElementById('developerName');
-        const downloadsCount = document.getElementById('downloadsCount');
-        const screenshotModal = new bootstrap.Modal(document.getElementById('screenshotModal'));
-        const modalScreenshot = document.getElementById('modalScreenshot');
+    // الحصول على معرّف التطبيق من الرابط
+    const urlParams = new URLSearchParams(window.location.search);
+    const appId = urlParams.get('appId');
+    const appRef = ref(db, 'apps/' + appId);
 
-        const appId = new URLSearchParams(window.location.search).get('appId');
-        const appRef = ref(db, 'apps/' + appId);
+    // جلب بيانات التطبيق من Firebase
+    get(appRef)
+      .then((snapshot) => {
+        const appData = snapshot.val();
+        if (appData) {
+          appIcon.src = appData.iconUrl;
+          appName.textContent = appData.name;
+          appDescription.textContent = appData.description;
+          downloadsCount.textContent = appData.downloads || 0;
+          downloadBtn.href = appData.fileUrl;
 
-        // جلب بيانات التطبيق
-        get(appRef).then((snapshot) => {
-            const app = snapshot.val();
-            if (app) {
-                appIcon.src = app.iconUrl;
-                appName.textContent = app.name;
-                appDescription.textContent = app.description;
-                developerName.textContent = app.developer || 'غير محدد';
-                downloadsCount.textContent = app.downloads || 0;
-                downloadBtn.href = app.fileUrl;
+          // إذا كان التطبيق يحتوي على بيانات المطور (الاسم ومعرف المستخدم)
+          if (appData.developer && appData.uid) {
+            // جعل اسم المطور رابطاً ينقل إلى ملفه الشخصي باستخدام query parameter "uid"
+            developerName.innerHTML = `<a href="profile.html?uid=${appData.uid}" class="developer-link">${appData.developer}</a>`;
+          } else {
+            developerName.textContent = appData.developer || 'غير محدد';
+          }
 
-                // إضافة صور الشاشات (Screenshots)
-                if (app.screenshots && app.screenshots.length > 0) {
-                    app.screenshots.forEach((screenshot) => {
-                        const img = document.createElement('img');
-                        img.src = screenshot;
-                        img.alt = "Screenshot";
-                        img.addEventListener('click', () => {
-                            modalScreenshot.src = screenshot;
-                            screenshotModal.show();
-                        });
-                        screenshotGallery.appendChild(img);
-                    });
-                } else {
-                    screenshotGallery.innerHTML = '<p>لا توجد صور توضيحية لهذا التطبيق.</p>';
-                }
-            }
-        }).catch((error) => console.error("Error fetching app data:", error));
+          // تعبئة معرض صور الشاشات
+          if (appData.screenshots && appData.screenshots.length > 0) {
+            appData.screenshots.forEach((screenshot) => {
+              const img = document.createElement('img');
+              img.src = screenshot;
+              img.alt = "Screenshot";
+              img.addEventListener('click', () => {
+                modalScreenshot.src = screenshot;
+                screenshotModal.show();
+              });
+              screenshotGallery.appendChild(img);
+            });
+          } else {
+            screenshotGallery.innerHTML = '<p class="text-center">لا توجد صور توضيحية لهذا التطبيق.</p>';
+          }
+        }
+      })
+      .catch((error) => console.error("Error fetching app data:", error));
 
-        // التحقق مما إذا قام المستخدم بتحميل التطبيق من قبل
-        const userDownloadKey = `downloaded_${appId}`;
-        const hasDownloaded = localStorage.getItem(userDownloadKey);
-
-        // تحديث عدد التحميلات عند النقر على الزر
-        downloadBtn.addEventListener('click', (event) => {
-            event.preventDefault(); // منع السلوك الافتراضي للرابط
-
-            if (!hasDownloaded) {
-                // تحديث عدد التحميلات في Firebase
-                update(appRef, { downloads: (parseInt(downloadsCount.textContent) || 0) + 1 })
-                    .then(() => {
-                        // تحديث العداد مباشرة على الصفحة
-                        downloadsCount.textContent = parseInt(downloadsCount.textContent) + 1;
-
-                        // تخزين معرف التحميل في Local Storage
-                        localStorage.setItem(userDownloadKey, true);
-                    })
-                    .catch((error) => {
-                        console.error("Error updating downloads count:", error);
-                        alert('حدث خطأ أثناء تحديث عدد التحميلات.');
-                    });
-            }
-
-            // إعادة التوجيه إلى رابط التحميل بغض النظر عن حالة التحميل السابقة
-            window.location.href = downloadBtn.href;
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    // عند الضغط على زر التحميل، يتم التحقق من إذا كان المستخدم قد حمل التطبيق مسبقًا (باستخدام localStorage)
+    downloadBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      const userDownloadKey = `downloaded_${appId}`;
+      
+      // تحقق من localStorage في كل مرة (حتى لو تم تحميله مسبقاً)
+      if (!localStorage.getItem(userDownloadKey)) {
+        update(appRef, { downloads: (parseInt(downloadsCount.textContent) || 0) + 1 })
+          .then(() => {
+            downloadsCount.textContent = parseInt(downloadsCount.textContent) + 1;
+            localStorage.setItem(userDownloadKey, true);
+          })
+          .catch((error) => {
+            console.error("Error updating downloads count:", error);
+            alert('حدث خطأ أثناء تحديث عدد التحميلات.');
+          });
+      }
+      // إعادة التوجيه إلى رابط التحميل بعد فحص وتحديث العدد (حتى لو تم التحميل مسبقاً)
+      window.location.href = downloadBtn.href;
+    });
+  </script>
 </body>
 </html>
