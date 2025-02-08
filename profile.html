@@ -1,249 +1,319 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الملف الشخصي</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #007BFF;
-            --secondary-color: #0056b3;
-            --accent-color: #00D1FF;
-            --dark-bg: #1A1A1A;
-            --light-bg: #F8F9FA;
-            --text-color: #212529;
-        }
-
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
-            color: var(--text-color);
-        }
-
-        .navbar {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #fff;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .navbar-brand:hover {
-            color: var(--accent-color);
-        }
-
-        .navbar-nav .nav-link {
-            color: #fff;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: var(--accent-color);
-        }
-
-        .profile-card {
-            background: #fff;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.1);
-            text-align: center;
-            padding: 30px;
-            margin-top: 50px;
-        }
-
-        .profile-card img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 20px;
-        }
-
-        .profile-card h2 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .profile-card p {
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 25px;
-            transition: background 0.3s, transform 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملف الشخصي - AppSouq</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #007BFF; /* الأزرق الأساسي */
+      --secondary-color: #0056b3; /* الأزرق الداكن */
+      --accent-color: #00D1FF; /* أزرق فاتح متألق */
+      --dark-bg: #1A1A1A; /* خلفية داكنة */
+      --light-bg: #F8F9FA; /* خلفية فاتحة */
+      --text-color: #212529; /* النص */
+    }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
+      color: var(--text-color);
+      margin-top: 70px; /* للتأكد من ظهور المحتوى تحت شريط التنقل الثابت */
+    }
+    /* شريط التنقل */
+    .navbar {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+    }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+    .navbar-brand:hover {
+      color: var(--accent-color);
+    }
+    .navbar-nav .nav-link {
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .navbar-nav .nav-link:hover {
+      color: var(--accent-color);
+    }
+    /* بطاقة الملف الشخصي */
+    .profile-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.1);
+      text-align: center;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+    .profile-card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+    .profile-card h2 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    .profile-card p {
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+    .btn-primary {
+      background: var(--primary-color);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .btn-primary:hover {
+      background: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    }
+    /* بطاقات التطبيقات */
+    .app-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .app-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+    }
+    .app-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 20px 20px 0 0;
+    }
+    .app-card h5 {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      margin-top: 10px;
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
+  <!-- شريط التنقل -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" id="homeLink">
+        <i class="fas fa-store-alt me-2"></i>AppSouq
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto" id="navLinks"></ul>
+      </div>
+    </div>
+  </nav>
 
-    <!-- شريط التنقل العلوي -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" id="homeLink">
-                <i class="fas fa-store-alt me-2"></i>AppSouq
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto" id="navLinks"></ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- محتوى الصفحة -->
-    <main class="container">
-        <div class="profile-card">
-            <img id="profilePic" src="https://via.placeholder.com/150" alt="صورة الملف الشخصي">
-            <h2 id="userName">اسم المستخدم</h2>
-            <p id="userEmail">البريد الإلكتروني: example@example.com</p>
-            <button class="btn btn-primary" id="editProfileBtn">تعديل الملف الشخصي</button>
-        </div>
-    </main>
-
-    <!-- Dialog لتعديل الملف الشخصي -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editProfileForm">
-                        <div class="mb-3">
-                            <label for="newName" class="form-label">اسم المستخدم</label>
-                            <input type="text" id="newName" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="newEmail" class="form-label">البريد الإلكتروني</label>
-                            <input type="email" id="newEmail" class="form-control" disabled> 
-                        </div>
-                        <div class="mb-3">
-                            <label for="newProfilePic" class="form-label">رابط الصورة الشخصية</label>
-                            <input type="text" id="newProfilePic" class="form-control">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="button" class="btn btn-primary" id="saveProfileBtn">حفظ التعديلات</button>
-                </div>
-            </div>
-        </div>
+  <!-- محتوى الصفحة -->
+  <main class="container pt-4">
+    <!-- بطاقة الملف الشخصي -->
+    <div class="profile-card">
+      <img id="profilePic" src="https://via.placeholder.com/150" alt="صورة الملف الشخصي">
+      <h2 id="userName">اسم المستخدم</h2>
+      <p id="userEmail">البريد الإلكتروني: example@example.com</p>
+      <!-- زر التعديل سيتم عرضه فقط إذا كان المستخدم يطّلع على ملفه الشخصي -->
+      <button class="btn btn-primary" id="editProfileBtn">تعديل الملف الشخصي</button>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="firebase-config.js"></script> <!-- رابط ملف Firebase -->
+    <!-- قسم التطبيقات المرفوعة -->
+    <section class="mb-5">
+      <h2 class="fw-bold mb-4 text-center">تطبيقاتي المرفوعة</h2>
+      <div class="row row-cols-1 row-cols-md-3 g-4" id="userAppsContainer">
+        <!-- سيتم تحميل التطبيقات هنا -->
+      </div>
+    </section>
+  </main>
 
-    <script>
-        const auth = firebase.auth();
-        const db = firebase.database();
+  <!-- Dialog تعديل الملف الشخصي -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editProfileForm">
+            <div class="mb-3">
+              <label for="newName" class="form-label">اسم المستخدم</label>
+              <input type="text" id="newName" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="newEmail" class="form-label">البريد الإلكتروني</label>
+              <input type="email" id="newEmail" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="newProfilePic" class="form-label">رابط الصورة الشخصية</label>
+              <input type="text" id="newProfilePic" class="form-control">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+          <button type="button" class="btn btn-primary" id="saveProfileBtn">حفظ التعديلات</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // إعادة التوجيه إلى الصفحة الرئيسية
-        document.getElementById('homeLink').addEventListener('click', () => {
-            window.location.href = 'index.html';
+  <!-- السكربتات -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="firebase-config.js"></script> <!-- ملف إعدادات Firebase -->
+
+  <script>
+    const auth = firebase.auth();
+    const db   = firebase.database();
+
+    // إعادة التوجيه إلى الصفحة الرئيسية عند النقر على شعار الموقع
+    document.getElementById('homeLink').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    // تحديث شريط التنقل بناءً على حالة المستخدم
+    auth.onAuthStateChanged((currentUser) => {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.innerHTML = '';
+
+      if (currentUser) {
+        navLinks.innerHTML = `
+          <li class="nav-item"><a class="nav-link" href="profile.html">الملف الشخصي</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">تسجيل الخروج</a></li>
+          <li class="nav-item"><a class="nav-link" href="upload.html">رفع تطبيق</a></li>
+        `;
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          auth.signOut().then(() => window.location.reload());
+        });
+      } else {
+        navLinks.innerHTML = `
+          <li class="nav-item"><a class="nav-link" href="login.html">تسجيل الدخول</a></li>
+          <li class="nav-item"><a class="nav-link" href="signup.html">إنشاء حساب</a></li>
+        `;
+      }
+
+      // تحديد المستخدم الذي سيتم عرضه في الصفحة من خلال رابط query parameter "uid"
+      const urlParams = new URLSearchParams(window.location.search);
+      let profileUid = urlParams.get('uid');
+      // إذا لم يتم تمرير uid وكانت الجلسة موجودة نعرض الملف الخاص بالمستخدم الحالي
+      if (!profileUid && currentUser) {
+        profileUid = currentUser.uid;
+      }
+
+      // جلب بيانات الملف الشخصي للمستخدم المحدد (profileUid)
+      if (profileUid) {
+        db.ref('users/' + profileUid).once('value').then((snapshot) => {
+          const userData = snapshot.val();
+          if (userData) {
+            document.getElementById('userName').textContent = userData.name || 'غير معروف';
+            document.getElementById('userEmail').textContent = 'البريد الإلكتروني: ' + (userData.email || 'غير معروف');
+            document.getElementById('profilePic').src = userData.profilePicUrl || 'https://via.placeholder.com/150';
+          }
+        }).catch((error) => {
+          console.error("حدث خطأ أثناء جلب بيانات المستخدم:", error);
         });
 
-        auth.onAuthStateChanged((user) => {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.innerHTML = '';
-
-            if (user) {
-                const userId = user.uid;
-                db.ref('users/' + userId).once('value').then((snapshot) => {
-                    const userData = snapshot.val();
-                    if (userData) {
-                        document.getElementById('userName').textContent = userData.name || 'غير معروف';
-                        document.getElementById('userEmail').textContent = 'البريد الإلكتروني: ' + (userData.email || 'غير معروف');
-                        document.getElementById('profilePic').src = userData.profilePicUrl || 'https://via.placeholder.com/150';
-                    }
-                });
-
-                navLinks.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="profile.html">الملف الشخصي</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn">تسجيل الخروج</a></li>
-                `;
-                document.getElementById('logoutBtn').addEventListener('click', () => {
-                    auth.signOut().then(() => window.location.reload());
-                });
-            } else {
-                navLinks.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="login.html">تسجيل الدخول</a></li>
-                    <li class="nav-item"><a class="nav-link" href="signup.html">إنشاء حساب</a></li>
-                `;
-            }
+        // جلب التطبيقات/الألعاب المرفوعة بواسطة المستخدم الذي يمتلك profileUid
+        db.ref('apps').orderByChild('uid').equalTo(profileUid).once('value', (snapshot) => {
+          const userAppsContainer = document.getElementById('userAppsContainer');
+          userAppsContainer.innerHTML = '';
+          if (snapshot.exists()) {
+            snapshot.forEach((appSnapshot) => {
+              const app = appSnapshot.val();
+              app.key = appSnapshot.key;
+              userAppsContainer.innerHTML += `
+                <div class="col">
+                  <div class="card app-card shadow-sm">
+                    <img src="${app.iconUrl}" class="card-img-top" alt="${app.name}">
+                    <div class="card-body text-center">
+                      <h5 class="card-title">${app.name}</h5>
+                      <p class="card-text">${app.description}</p>
+                      <a href="download.html?appId=${app.key}" class="btn btn-primary">تحميل</a>
+                    </div>
+                  </div>
+                </div>
+              `;
+            });
+          } else {
+            userAppsContainer.innerHTML = `<p class="text-center">لا توجد تطبيقات أو ألعاب مرفوعة بعد.</p>`;
+          }
         });
+      } else {
+        // إذا لم يكن هناك uid سواء في الرابط أو جلسة مستخدم نشطة، يمكن توجيه المستخدم إلى صفحة تسجيل الدخول
+        console.warn("لا يوجد معرف مستخدم لعرض الملف الشخصي.");
+      }
 
-        // عرض مربع الحوار عند الضغط على تعديل الملف الشخصي
-        document.getElementById('editProfileBtn').addEventListener('click', () => {
-            const userName = document.getElementById('userName').textContent;
-            const userEmail = document.getElementById('userEmail').textContent.replace('البريد الإلكتروني: ', '');
-            const profilePic = document.getElementById('profilePic').src;
+      // إظهار زر تعديل الملف الشخصي فقط إذا كان المستخدم يعرض ملفه الخاص
+      // إذا كان currentUser موجود و profileUid تساويه
+      if (currentUser && currentUser.uid === profileUid) {
+        document.getElementById('editProfileBtn').style.display = 'inline-block';
+      } else {
+        document.getElementById('editProfileBtn').style.display = 'none';
+      }
+    });
 
-            document.getElementById('newName').value = userName;
-            document.getElementById('newEmail').value = userEmail;
-            document.getElementById('newProfilePic').value = profilePic;
+    // عرض مربع تعديل الملف الشخصي عند الضغط على زر "تعديل الملف الشخصي"
+    document.getElementById('editProfileBtn').addEventListener('click', () => {
+      const userName   = document.getElementById('userName').textContent;
+      const userEmail  = document.getElementById('userEmail').textContent.replace('البريد الإلكتروني: ', '');
+      const profilePic = document.getElementById('profilePic').src;
 
-            const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-            modal.show();
+      document.getElementById('newName').value = userName;
+      document.getElementById('newEmail').value = userEmail;
+      document.getElementById('newProfilePic').value = profilePic;
+
+      const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+      modal.show();
+    });
+
+    // حفظ تعديلات الملف الشخصي
+    document.getElementById('saveProfileBtn').addEventListener('click', () => {
+      const newName       = document.getElementById('newName').value;
+      const newEmail      = document.getElementById('newEmail').value;
+      const newProfilePic = document.getElementById('newProfilePic').value;
+
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userId = currentUser.uid;
+        db.ref('users/' + userId).update({
+          name: newName,
+          email: newEmail,
+          profilePicUrl: newProfilePic
+        }).then(() => {
+          document.getElementById('userName').textContent = newName;
+          document.getElementById('userEmail').textContent = 'البريد الإلكتروني: ' + newEmail;
+          document.getElementById('profilePic').src = newProfilePic;
+
+          const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+          modal.hide();
+          alert('تم تحديث الملف الشخصي بنجاح!');
+        }).catch((error) => {
+          console.error('حدث خطأ أثناء تحديث الملف الشخصي:', error);
+          alert('حدث خطأ أثناء تحديث الملف الشخصي. حاول مرة أخرى.');
         });
-
-        // حفظ التعديلات عند الضغط على زر الحفظ
-        document.getElementById('saveProfileBtn').addEventListener('click', () => {
-            const newName = document.getElementById('newName').value;
-            const newEmail = document.getElementById('newEmail').value;
-            const newProfilePic = document.getElementById('newProfilePic').value;
-
-            const user = auth.currentUser;
-            if (user) {
-                const userId = user.uid;
-
-                // تحديث البيانات في Firebase
-                db.ref('users/' + userId).update({
-                    name: newName,
-                    email: newEmail,
-                    profilePicUrl: newProfilePic
-                }).then(() => {
-                    // تحديث واجهة المستخدم
-                    document.getElementById('userName').textContent = newName;
-                    document.getElementById('userEmail').textContent = 'البريد الإلكتروني: ' + newEmail;
-                    document.getElementById('profilePic').src = newProfilePic;
-
-                    // إغلاق مربع الحوار
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
-                    modal.hide();
-
-                    alert('تم تحديث الملف الشخصي بنجاح!');
-                }).catch((error) => {
-                    console.error('حدث خطأ أثناء تحديث الملف الشخصي:', error);
-                    alert('حدث خطأ أثناء تحديث الملف الشخصي. حاول مرة أخرى.');
-                });
-            }
-        });
-    </script>
+      }
+    });
+  </script>
 </body>
 </html>
