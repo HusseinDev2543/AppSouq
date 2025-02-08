@@ -186,10 +186,25 @@
 
     <!-- محتوى الصفحة -->
     <main class="container mt-5 pt-4">
-        <section class="featured-apps mb-5">
+        <!-- القسم الأول: التطبيقات الرائجة مرتبة حسب عدد التحميلات -->
+        <section class="trending-apps mb-5">
             <h2 class="fw-bold mb-4">التطبيقات الرائجة</h2>
-            <div class="row row-cols-1 row-cols-md-3 g-4" id="appsContainer">
-                <!-- سيتم تحميل التطبيقات هنا -->
+            <div class="row row-cols-1 row-cols-md-3 g-4" id="trendingAppsContainer">
+                <!-- سيتم تحميل التطبيقات الرائجة هنا -->
+            </div>
+        </section>
+        <!-- القسم الثاني: التطبيقات الحديثة (النزلة حديثاً) -->
+        <section class="new-apps mb-5">
+            <h2 class="fw-bold mb-4">التطبيقات الحديثة</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4" id="newAppsContainer">
+                <!-- سيتم تحميل التطبيقات الحديثة هنا -->
+            </div>
+        </section>
+        <!-- القسم الثالث: العاب -->
+        <section class="games-apps mb-5">
+            <h2 class="fw-bold mb-4">العاب</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4" id="gamesAppsContainer">
+                <!-- سيتم تحميل العاب هنا -->
             </div>
         </section>
     </main>
@@ -199,7 +214,6 @@
     <script>
         const auth = firebase.auth();
         const db = firebase.database();
-        const appsContainer = document.getElementById('appsContainer');
         const searchInput = document.getElementById('searchInput');
 
         // تحديث حالة المستخدم في شريط التنقل
@@ -225,48 +239,85 @@
             }
         });
 
-        // تحميل التطبيقات من Firebase
+        // تحميل التطبيقات من Firebase وتوزيعها على الأقسام الثلاثة
         db.ref('apps').on('value', (snapshot) => {
-            appsContainer.innerHTML = ''; 
+            // تفريغ الحاويات الثلاثة
+            document.getElementById('trendingAppsContainer').innerHTML = '';
+            document.getElementById('newAppsContainer').innerHTML = '';
+            document.getElementById('gamesAppsContainer').innerHTML = '';
 
             if (!snapshot.exists()) {
-                // عرض بطاقات التحميل أثناء انتظار البيانات
-                for (let i = 0; i < 6; i++) { // عرض 6 بطاقات تحميل (loading cards)
-                const loadingCard = `
+                let loadingCard = '';
+                for (let i = 0; i < 6; i++) {
+                    loadingCard += `
                     <div class="col">
                         <div class="card loading-card">
                             <div class="spinner-border" role="status">
                                 <span class="sr-only">جاري التحميل...</span>
                             </div>
                         </div>
-                    </div>
-                `;
-                appsContainer.innerHTML += loadingCard;
+                    </div>`;
+                }
+                document.getElementById('trendingAppsContainer').innerHTML = loadingCard;
+                document.getElementById('newAppsContainer').innerHTML = loadingCard;
+                document.getElementById('gamesAppsContainer').innerHTML = loadingCard;
+                return;
             }
-            return; // التوقف هنا إذا لم توجد بيانات
-        }
 
-        snapshot.forEach((appSnapshot) => {
-            const app = appSnapshot.val();
-            
-            // تأكد من وجود fileUrl للتطبيق
-            if (app.fileUrl) {
-                const appCard = `
+            let appsArray = [];
+            snapshot.forEach((appSnapshot) => {
+                const app = appSnapshot.val();
+                // التأكد من وجود ملف التطبيق قبل العرض
+                if (app.fileUrl) {
+                    app.key = appSnapshot.key;
+                    // إذا لم يتوفر عدد تحميلات أو تاريخ نشر، نضع قيمة افتراضية
+                    app.downloads = app.downloads || 0;
+                    app.createdAt = app.createdAt || 0;
+                    appsArray.push(app);
+                }
+            });
+
+            // القسم الأول: التطبيقات الرائجة (ترتيب حسب عدد التحميلات تنازلياً)
+            let trendingApps = [...appsArray].sort((a, b) => b.downloads - a.downloads);
+            // القسم الثاني: التطبيقات الحديثة (ترتيب حسب تاريخ النشر تنازلياً)
+            let newApps = [...appsArray].sort((a, b) => b.createdAt - a.createdAt);
+            // القسم الثالث: العاب (تصفية التطبيقات التي تكون فئة التطبيق "1" والتي ترمز إلى الألعاب)
+            let gamesApps = appsArray.filter(app => app.category === "1");
+
+            // دالة لإنشاء بطاقة التطبيق
+            function createAppCard(app) {
+                return `
                     <div class="col">
                         <div class="card app-card shadow-sm">
                             <img src="${app.iconUrl}" class="card-img-top" alt="${app.name}">
                             <div class="card-body text-center">
                                 <h5 class="card-title">${app.name}</h5>
                                 <p class="card-text">${app.description}</p>
-                                <a href="download.html?appId=${appSnapshot.key}" class="btn btn-primary">تحميل</a>
+                                <a href="download.html?appId=${app.key}" class="btn btn-primary">تحميل</a>
                             </div>
                         </div>
                     </div>
                 `;
-                appsContainer.innerHTML += appCard;
             }
+
+            // عرض التطبيقات الرائجة
+            const trendingContainer = document.getElementById('trendingAppsContainer');
+            trendingApps.forEach(app => {
+                trendingContainer.innerHTML += createAppCard(app);
+            });
+
+            // عرض التطبيقات الحديثة
+            const newAppsContainer = document.getElementById('newAppsContainer');
+            newApps.forEach(app => {
+                newAppsContainer.innerHTML += createAppCard(app);
+            });
+
+            // عرض العاب
+            const gamesAppsContainer = document.getElementById('gamesAppsContainer');
+            gamesApps.forEach(app => {
+                gamesAppsContainer.innerHTML += createAppCard(app);
+            });
         });
-    });
 
         // البحث في التطبيقات
         searchInput.addEventListener('input', () => {
@@ -284,7 +335,6 @@
                 }
             });
         });
-
     </script>
 </body>
 </html>
