@@ -8,21 +8,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --primary-color: #007BFF; /* الأزرق الأساسي */
-      --secondary-color: #0056b3; /* الأزرق الداكن */
-      --accent-color: #00D1FF; /* أزرق فاتح متألق */
-      --dark-bg: #1A1A1A; /* خلفية داكنة */
-      --light-bg: #F8F9FA; /* خلفية فاتحة */
-      --text-color: #212529; /* النص */
+      --primary-color: #007BFF; 
+      --secondary-color: #0056b3; 
+      --accent-color: #00D1FF; 
+      --dark-bg: #1A1A1A;
+      --light-bg: #F8F9FA; 
+      --text-color: #212529; 
     }
     body {
       font-family: 'Tajawal', sans-serif;
       background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
       color: var(--text-color);
-      /* لضمان ظهور المحتوى أسفل شريط التنقل الثابت */
+      
       margin-top: 70px;
     }
-    /* تصميم شريط التنقل مطابق للصفحات الأخرى */
+   
     .navbar {
       background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
@@ -44,7 +44,7 @@
     .navbar-nav .nav-link:hover {
       color: var(--accent-color);
     }
-    /* تصميم نموذج الرفع */
+    
     .upload-section {
       max-width: 700px;
       margin: 80px auto;
@@ -53,7 +53,7 @@
       border-radius: 20px;
       box-shadow: 0 8px 20px rgba(0, 123, 255, 0.1);
     }
-    /* زر الرفع بتأثيرات ديناميكية */
+    
     .btn-primary {
       background: var(--primary-color);
       border: none;
@@ -74,7 +74,7 @@
 </head>
 <body>
 
-  <!-- شريط التنقل -->
+
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="index.html">
@@ -84,13 +84,13 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <!-- سيتم تحديث الروابط ديناميكيًا حسب حالة المستخدم -->
+        
         <ul id="navLinks" class="navbar-nav ms-auto"></ul>
       </div>
     </div>
   </nav>
 
-  <!-- قسم رفع التطبيق/اللعبة -->
+
   <section class="upload-section">
     <h2 class="text-primary fw-bold mb-4 text-center">رفع تطبيق أو لعبة</h2>
     <form id="uploadForm">
@@ -140,7 +140,7 @@
     </form>
   </section>
 
-  <!-- شاشة التحميل -->
+  
   <div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -158,25 +158,24 @@
     </div>
   </div>
 
-  <!-- تحميل Bootstrap JS -->
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- تحميل مكتبات Firebase -->
+
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  
-  <!-- تحميل ملف إعدادات Firebase الخارجي -->
+
   <script src="firebase-config.js"></script>
 
-  <!-- الكود الرئيسي للتعامل مع رفع التطبيق -->
+  
   <script>
-    // استخدام Firebase المُهيأ من ملف firebase-config.js
+    
     const storage   = firebase.storage();
     const database  = firebase.database();
     const auth      = firebase.auth();
 
-    // تحديث شريط التنقل بناءً على حالة المستخدم
+    
     auth.onAuthStateChanged((user) => {
       const navLinks = document.getElementById('navLinks');
       navLinks.innerHTML = "";
@@ -198,7 +197,7 @@
       }
     });
 
-    // رفع التطبيق عند تقديم النموذج
+    
     const uploadForm = document.getElementById('uploadForm');
     uploadForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -208,7 +207,7 @@
         return;
       }
 
-      // الحصول على بيانات النموذج
+      
       const appNameVal        = document.getElementById('appName').value;
       const developerNameVal  = document.getElementById('developerName').value;
       const appIconFile       = document.getElementById('appIcon').files[0];
@@ -222,19 +221,19 @@
       const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
       loadingModal.show();
 
-      // رفع أيقونة التطبيق
+      
       const iconRef = storage.ref('appIcons/' + appIconFile.name);
       iconRef.put(appIconFile)
         .then(() => iconRef.getDownloadURL())
         .then((iconUrl) => {
-          // رفع ملف التطبيق
+          
           const fileRef = storage.ref('appFiles/' + appFileFile.name);
           return fileRef.put(appFileFile)
             .then(() => fileRef.getDownloadURL())
             .then((fileUrl) => ({ iconUrl, fileUrl }));
         })
         .then(({ iconUrl, fileUrl }) => {
-          // رفع لقطات الشاشة
+          
           const screenshotPromises = [];
           [appScreenshot1File, appScreenshot2File, appScreenshot3File].forEach((screenshot) => {
             if (screenshot) {
@@ -248,7 +247,7 @@
             .then((screenshotsUrls) => ({ iconUrl, fileUrl, screenshotsUrls }));
         })
         .then(({ iconUrl, fileUrl, screenshotsUrls }) => {
-          // تخزين بيانات التطبيق في قاعدة البيانات
+          
           return database.ref('apps').push({
             uid: user.uid,
             name: appNameVal,
