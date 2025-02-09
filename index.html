@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #007BFF; /* الأزرق الأساسي */
-            --secondary-color: #0056b3; /* الأزرق الداكن */
-            --accent-color: #00D1FF; /* أزرق فاتح متألق */
-            --dark-bg: #1A1A1A; /* خلفية داكنة */
-            --light-bg: #F8F9FA; /* خلفية فاتحة */
-            --text-color: #212529; /* النص */
+            --primary-color: #007BFF; 
+            --secondary-color: #0056b3; 
+            --accent-color: #00D1FF; 
+            --dark-bg: #1A1A1A; 
+            --light-bg: #F8F9FA; 
+            --text-color: #212529; 
         }
 
         body {
@@ -77,9 +77,9 @@
             background: var(--accent-color);
         }
 
-        /* بطاقة التحميل */
+        
         .loading-card {
-            background: #f0f0f0; /* لون خلفية رمادي فاتح */
+            background: #f0f0f0; 
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -95,7 +95,7 @@
             color: var(--primary-color);
         }
 
-        /* بطاقات التطبيقات */
+        
         .app-card {
             background: #fff;
             border: 1px solid #ddd;
@@ -130,7 +130,7 @@
             color: #FFD700;
         }
 
-        /* الأزرار */
+        
         .btn-primary {
             background: var(--primary-color);
             border: none;
@@ -157,7 +157,7 @@
 </head>
 <body class="bg-light">
 
-    <!-- شريط التنقل العلوي -->
+    
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">
@@ -172,7 +172,7 @@
         </div>
     </nav>
 
-    <!-- شريط البحث -->
+    
     <div class="container mt-5 pt-4">
         <div class="search-bar bg-white p-3 rounded-3 shadow-sm mb-4">
             <div class="input-group">
@@ -184,39 +184,39 @@
         </div>
     </div>
 
-    <!-- محتوى الصفحة -->
+    
     <main class="container mt-5 pt-4">
-        <!-- القسم الأول: التطبيقات الرائجة مرتبة حسب عدد التحميلات -->
+        
         <section class="trending-apps mb-5">
             <h2 class="fw-bold mb-4">التطبيقات الرائجة</h2>
             <div class="row row-cols-1 row-cols-md-3 g-4" id="trendingAppsContainer">
-                <!-- سيتم تحميل التطبيقات الرائجة هنا -->
+                
             </div>
         </section>
-        <!-- القسم الثاني: التطبيقات الحديثة (النزلة حديثاً) -->
+        
         <section class="new-apps mb-5">
             <h2 class="fw-bold mb-4">التطبيقات الحديثة</h2>
             <div class="row row-cols-1 row-cols-md-3 g-4" id="newAppsContainer">
-                <!-- سيتم تحميل التطبيقات الحديثة هنا -->
+                
             </div>
         </section>
-        <!-- القسم الثالث: العاب -->
+        
         <section class="games-apps mb-5">
             <h2 class="fw-bold mb-4">العاب</h2>
             <div class="row row-cols-1 row-cols-md-3 g-4" id="gamesAppsContainer">
-                <!-- سيتم تحميل العاب هنا -->
+                
             </div>
         </section>
     </main>
 
-    <!-- Scripts -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const auth = firebase.auth();
         const db = firebase.database();
         const searchInput = document.getElementById('searchInput');
 
-        // تحديث حالة المستخدم في شريط التنقل
+        
         auth.onAuthStateChanged((user) => {
             const navLinks = document.getElementById('navLinks');
             navLinks.innerHTML = ''; 
@@ -239,9 +239,9 @@
             }
         });
 
-        // تحميل التطبيقات من Firebase وتوزيعها على الأقسام الثلاثة
+        
         db.ref('apps').on('value', (snapshot) => {
-            // تفريغ الحاويات الثلاثة
+            
             document.getElementById('trendingAppsContainer').innerHTML = '';
             document.getElementById('newAppsContainer').innerHTML = '';
             document.getElementById('gamesAppsContainer').innerHTML = '';
@@ -267,24 +267,24 @@
             let appsArray = [];
             snapshot.forEach((appSnapshot) => {
                 const app = appSnapshot.val();
-                // التأكد من وجود ملف التطبيق قبل العرض
+                
                 if (app.fileUrl) {
                     app.key = appSnapshot.key;
-                    // إذا لم يتوفر عدد تحميلات أو تاريخ نشر، نضع قيمة افتراضية
+                    
                     app.downloads = app.downloads || 0;
                     app.createdAt = app.createdAt || 0;
                     appsArray.push(app);
                 }
             });
 
-            // القسم الأول: التطبيقات الرائجة (ترتيب حسب عدد التحميلات تنازلياً)
+            
             let trendingApps = [...appsArray].sort((a, b) => b.downloads - a.downloads);
-            // القسم الثاني: التطبيقات الحديثة (ترتيب حسب تاريخ النشر تنازلياً)
+            
             let newApps = [...appsArray].sort((a, b) => b.createdAt - a.createdAt);
-            // القسم الثالث: العاب (تصفية التطبيقات التي تكون فئة التطبيق "1" والتي ترمز إلى الألعاب)
+            
             let gamesApps = appsArray.filter(app => app.category === "1");
 
-            // دالة لإنشاء بطاقة التطبيق
+            
             function createAppCard(app) {
                 return `
                     <div class="col">
@@ -300,26 +300,26 @@
                 `;
             }
 
-            // عرض التطبيقات الرائجة
+            
             const trendingContainer = document.getElementById('trendingAppsContainer');
             trendingApps.forEach(app => {
                 trendingContainer.innerHTML += createAppCard(app);
             });
 
-            // عرض التطبيقات الحديثة
+            
             const newAppsContainer = document.getElementById('newAppsContainer');
             newApps.forEach(app => {
                 newAppsContainer.innerHTML += createAppCard(app);
             });
 
-            // عرض العاب
+            
             const gamesAppsContainer = document.getElementById('gamesAppsContainer');
             gamesApps.forEach(app => {
                 gamesAppsContainer.innerHTML += createAppCard(app);
             });
         });
 
-        // البحث في التطبيقات
+        
         searchInput.addEventListener('input', () => {
             const searchTerm = searchInput.value.toLowerCase().trim();
             const appCards = document.querySelectorAll('.app-card');
