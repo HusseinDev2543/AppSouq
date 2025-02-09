@@ -8,13 +8,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     :root {
-      --primary-color: #007BFF;    /* الأزرق الأساسي */
-      --secondary-color: #0056b3;  /* الأزرق الداكن */
-      --accent-color: #00D1FF;     /* أزرق فاتح متألق */
-      --light-bg: #F8F9FA;         /* خلفية فاتحة */
-      --text-color: #212529;       /* لون النص */
+      --primary-color: #007BFF;
+      --secondary-color: #0056b3;
+      --accent-color: #00D1FF;
+      --light-bg: #F8F9FA;
+      --text-color: #212529;
     }
-    /* تنسيق الخلفية العام وتدرجاتها */
     body,
     html {
       height: 100%;
@@ -23,7 +22,6 @@
       background: linear-gradient(120deg, var(--light-bg) 0%, #E3F2FD 100%);
       color: var(--text-color);
     }
-    /* شريط التنقل */
     .navbar {
       background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
@@ -46,7 +44,6 @@
     .navbar-nav .nav-link:hover {
       color: var(--accent-color);
     }
-    /* بطاقة تحميل التطبيق */
     .download-card {
       max-width: 500px;
       width: 90%;
@@ -99,7 +96,6 @@
       color: #333;
       font-weight: 500;
     }
-    /* تنسيق اسم المطور كرابط */
     .developer-link {
       text-decoration: none;
       color: inherit;
@@ -108,7 +104,6 @@
     .developer-link:hover {
       color: var(--accent-color);
     }
-    /* معرض صور الشاشات */
     .screenshot-gallery {
       display: flex;
       gap: 10px;
@@ -126,7 +121,6 @@
     .screenshot-gallery img:hover {
       transform: scale(1.05);
     }
-    /* زر التحميل */
     .btn-download {
       background: var(--primary-color);
       color: #fff;
@@ -141,14 +135,12 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
     }
-    /* التذييل */
     footer {
       padding: 10px;
       text-align: center;
       font-size: 0.9rem;
       color: #555;
     }
-    /* تنسيق المودال الخاص بتكبير الصور */
     .modal-content img {
       width: 100%;
       max-height: 80vh;
@@ -175,17 +167,16 @@
       </div>
     </div>
   </nav>
+
   <!-- المحتوى الرئيسي -->
   <div class="container mt-5 pt-5">
     <div class="download-card">
       <img src="" id="appIcon" alt="أيقونة التطبيق" />
       <h5 id="appName">اسم التطبيق</h5>
       <p id="appDescription" class="description">وصف التطبيق</p>
-      <!-- بيانات إضافية: المطور وعدد التحميلات -->
       <div class="app-info">
         <div>
           <p class="info-title">المطور</p>
-          <!-- هنا يتم جعل اسم المطور رابط ينقل إلى بروفايل المستخدم -->
           <p class="info-value" id="developerName">غير محدد</p>
         </div>
         <div>
@@ -193,17 +184,17 @@
           <p class="info-value" id="downloadsCount">0</p>
         </div>
       </div>
-      <!-- معرض صور الشاشات -->
       <div class="screenshot-gallery" id="screenshotGallery">
         <!-- سيتم تعبئته ديناميكيًا -->
       </div>
-      <!-- زر التحميل -->
       <a href="#" id="downloadBtn" class="btn btn-download">تحميل الآن</a>
     </div>
   </div>
+
   <footer>
     © 2025 AppSouq. جميع الحقوق محفوظة.
   </footer>
+
   <!-- مودال تكبير الصور -->
   <div class="modal fade" id="screenshotModal" tabindex="-1" aria-labelledby="screenshotModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -214,25 +205,21 @@
       </div>
     </div>
   </div>
-  <!-- تحميل مكتبة Bootstrap JS أولاً -->
+
+  <!-- تحميل Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- سكربت Firebase وجلب بيانات التطبيق -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAySsu-6Hgt07j4JOcjLryo-v0ECwGUIb8",
-      authDomain: "",
-      projectId: "appsouq-9714b",
-      storageBucket: "appsouq-9714b.appspot.com",
-      messagingSenderId: "437915304190",
-      appId: "1:437915304190:android:e28af3f65c55e1c60ae5af",
-      databaseURL: "https://appsouq-9714b-default-rtdb.firebaseio.com"
-    };
+  <!-- تحميل مكتبات Firebase (باستخدام إصدار compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-    const appFirebase = initializeApp(firebaseConfig);
-    const db = getDatabase(appFirebase);
+  <!-- تحميل ملف إعدادات Firebase الخارجي -->
+  <script src="firebase-config.js"></script>
+
+  <!-- الكود الرئيسي للتعامل مع بيانات التطبيق -->
+  <script>
+    // استخدام Firebase المُهيأ من ملف firebase-config.js
+    const db = firebase.database();
 
     // عناصر الصفحة
     const appIcon = document.getElementById('appIcon');
@@ -242,16 +229,17 @@
     const screenshotGallery = document.getElementById('screenshotGallery');
     const developerName = document.getElementById('developerName');
     const downloadsCount = document.getElementById('downloadsCount');
-    const screenshotModal = new bootstrap.Modal(document.getElementById('screenshotModal'));
+    const screenshotModalEl = document.getElementById('screenshotModal');
     const modalScreenshot = document.getElementById('modalScreenshot');
+    const screenshotModal = new bootstrap.Modal(screenshotModalEl);
 
     // الحصول على معرّف التطبيق من الرابط
     const urlParams = new URLSearchParams(window.location.search);
     const appId = urlParams.get('appId');
-    const appRef = ref(db, 'apps/' + appId);
+    const appRef = db.ref('apps/' + appId);
 
-    // جلب بيانات التطبيق من Firebase
-    get(appRef)
+    // جلب بيانات التطبيق من Firebase باستخدام once
+    appRef.once('value')
       .then((snapshot) => {
         const appData = snapshot.val();
         if (appData) {
@@ -261,9 +249,8 @@
           downloadsCount.textContent = appData.downloads || 0;
           downloadBtn.href = appData.fileUrl;
 
-          // إذا كان التطبيق يحتوي على بيانات المطور (الاسم ومعرف المستخدم)
+          // إعداد بيانات المطور كرابط إذا توفرت
           if (appData.developer && appData.uid) {
-            // جعل اسم المطور رابطاً ينقل إلى ملفه الشخصي باستخدام query parameter "uid"
             developerName.innerHTML = `<a href="profile.html?uid=${appData.uid}" class="developer-link">${appData.developer}</a>`;
           } else {
             developerName.textContent = appData.developer || 'غير محدد';
@@ -288,25 +275,26 @@
       })
       .catch((error) => console.error("Error fetching app data:", error));
 
-    // عند الضغط على زر التحميل، يتم التحقق من إذا كان المستخدم قد حمل التطبيق مسبقًا (باستخدام localStorage)
+    // عند الضغط على زر التحميل، تحديث عدد التحميلات إذا لم يُحمّل التطبيق مسبقًا
     downloadBtn.addEventListener('click', (event) => {
       event.preventDefault();
       const userDownloadKey = `downloaded_${appId}`;
-      
-      // تحقق من localStorage في كل مرة (حتى لو تم تحميله مسبقاً)
+
       if (!localStorage.getItem(userDownloadKey)) {
-        update(appRef, { downloads: (parseInt(downloadsCount.textContent) || 0) + 1 })
+        const currentDownloads = parseInt(downloadsCount.textContent) || 0;
+        appRef.update({ downloads: currentDownloads + 1 })
           .then(() => {
-            downloadsCount.textContent = parseInt(downloadsCount.textContent) + 1;
+            downloadsCount.textContent = currentDownloads + 1;
             localStorage.setItem(userDownloadKey, true);
+            window.location.href = downloadBtn.href;
           })
           .catch((error) => {
             console.error("Error updating downloads count:", error);
             alert('حدث خطأ أثناء تحديث عدد التحميلات.');
           });
+      } else {
+        window.location.href = downloadBtn.href;
       }
-      // إعادة التوجيه إلى رابط التحميل بعد فحص وتحديث العدد (حتى لو تم التحميل مسبقاً)
-      window.location.href = downloadBtn.href;
     });
   </script>
 </body>
