@@ -22,7 +22,7 @@
       /* لضمان ظهور المحتوى أسفل شريط التنقل الثابت */
       margin-top: 70px;
     }
-    /* تصميم شريط التنقل مطابق للانديكس */
+    /* تصميم شريط التنقل مطابق للصفحات الأخرى */
     .navbar {
       background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
@@ -158,29 +158,25 @@
     </div>
   </div>
 
-  <!-- السكربتات -->
+  <!-- تحميل Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- تحميل مكتبات Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  
+  <!-- تحميل ملف إعدادات Firebase الخارجي -->
+  <script src="firebase-config.js"></script>
+
+  <!-- الكود الرئيسي للتعامل مع رفع التطبيق -->
   <script>
-    // إعداد Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyAySsu-6Hgt07j4JOcjLryo-v0ECwGUIb8",
-      authDomain: "Authjk",
-      projectId: "appsouq-9714b",
-      storageBucket: "appsouq-9714b.appspot.com",
-      messagingSenderId: "437915304190",
-      appId: "1:437915304190:android:e28af3f65c55e1c60ae5af",
-      databaseURL: "https://appsouq-9714b-default-rtdb.firebaseio.com"
-    };
-    firebase.initializeApp(firebaseConfig);
+    // استخدام Firebase المُهيأ من ملف firebase-config.js
     const storage   = firebase.storage();
     const database  = firebase.database();
     const auth      = firebase.auth();
 
-    // تحديث شريط التنقل بناءً على حالة المستخدم (مشابه لصفحة الانديكس)
+    // تحديث شريط التنقل بناءً على حالة المستخدم
     auth.onAuthStateChanged((user) => {
       const navLinks = document.getElementById('navLinks');
       navLinks.innerHTML = "";
@@ -202,7 +198,7 @@
       }
     });
 
-    // رفع التطبيق
+    // رفع التطبيق عند تقديم النموذج
     const uploadForm = document.getElementById('uploadForm');
     uploadForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -212,77 +208,67 @@
         return;
       }
 
-      const appName        = document.getElementById('appName').value;
-      const developerName  = document.getElementById('developerName').value;
-      const appIcon        = document.getElementById('appIcon').files[0];
-      const appDescription = document.getElementById('appDescription').value;
-      const appCategory    = document.getElementById('appCategory').value;
-      const appFile        = document.getElementById('appFile').files[0];
-      const appScreenshot1 = document.getElementById('appScreenshot1').files[0];
-      const appScreenshot2 = document.getElementById('appScreenshot2').files[0];
-      const appScreenshot3 = document.getElementById('appScreenshot3').files[0];
+      // الحصول على بيانات النموذج
+      const appNameVal        = document.getElementById('appName').value;
+      const developerNameVal  = document.getElementById('developerName').value;
+      const appIconFile       = document.getElementById('appIcon').files[0];
+      const appDescriptionVal = document.getElementById('appDescription').value;
+      const appCategoryVal    = document.getElementById('appCategory').value;
+      const appFileFile       = document.getElementById('appFile').files[0];
+      const appScreenshot1File = document.getElementById('appScreenshot1').files[0];
+      const appScreenshot2File = document.getElementById('appScreenshot2').files[0];
+      const appScreenshot3File = document.getElementById('appScreenshot3').files[0];
 
       const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
       loadingModal.show();
 
-      // رفع الأيقونة
-      const iconRef = storage.ref('appIcons/' + appIcon.name);
-      iconRef.put(appIcon).then(() => {
-        iconRef.getDownloadURL().then((iconUrl) => {
+      // رفع أيقونة التطبيق
+      const iconRef = storage.ref('appIcons/' + appIconFile.name);
+      iconRef.put(appIconFile)
+        .then(() => iconRef.getDownloadURL())
+        .then((iconUrl) => {
           // رفع ملف التطبيق
-          const fileRef = storage.ref('appFiles/' + appFile.name);
-          fileRef.put(appFile).then(() => {
-            fileRef.getDownloadURL().then((fileUrl) => {
-              const screenshotPromises = [];
-              const screenshotsUrls  = [];
-              [appScreenshot1, appScreenshot2, appScreenshot3].forEach((screenshot) => {
-                if (screenshot) {
-                  const screenshotRef = storage.ref('appScreenshots/' + screenshot.name);
-                  screenshotPromises.push(
-                    screenshotRef.put(screenshot).then(() => screenshotRef.getDownloadURL())
-                  );
-                }
-              });
-              Promise.all(screenshotPromises).then((screenshots) => {
-                screenshotsUrls.push(...screenshots);
-                // تخزين بيانات التطبيق في قاعدة البيانات
-                database.ref('apps').push({
-                  uid: user.uid,
-                  name: appName,
-                  developer: developerName,
-                  iconUrl: iconUrl,
-                  description: appDescription,
-                  category: appCategory,
-                  fileUrl: fileUrl,
-                  screenshots: screenshotsUrls
-                }).then(() => {
-                  loadingModal.hide();
-                  alert('تم رفع التطبيق بنجاح!');
-                  uploadForm.reset();
-                }).catch((error) => {
-                  loadingModal.hide();
-                  alert('حدث خطأ: ' + error.message);
-                });
-              }).catch((error) => {
-                loadingModal.hide();
-                alert('حدث خطأ أثناء رفع الصور: ' + error.message);
-              });
-            }).catch((error) => {
-              loadingModal.hide();
-              alert('حدث خطأ أثناء الحصول على رابط الملف: ' + error.message);
-            });
-          }).catch((error) => {
-            loadingModal.hide();
-            alert('حدث خطأ أثناء رفع الملف: ' + error.message);
+          const fileRef = storage.ref('appFiles/' + appFileFile.name);
+          return fileRef.put(appFileFile)
+            .then(() => fileRef.getDownloadURL())
+            .then((fileUrl) => ({ iconUrl, fileUrl }));
+        })
+        .then(({ iconUrl, fileUrl }) => {
+          // رفع لقطات الشاشة
+          const screenshotPromises = [];
+          [appScreenshot1File, appScreenshot2File, appScreenshot3File].forEach((screenshot) => {
+            if (screenshot) {
+              const screenshotRef = storage.ref('appScreenshots/' + screenshot.name);
+              screenshotPromises.push(
+                screenshotRef.put(screenshot).then(() => screenshotRef.getDownloadURL())
+              );
+            }
           });
-        }).catch((error) => {
+          return Promise.all(screenshotPromises)
+            .then((screenshotsUrls) => ({ iconUrl, fileUrl, screenshotsUrls }));
+        })
+        .then(({ iconUrl, fileUrl, screenshotsUrls }) => {
+          // تخزين بيانات التطبيق في قاعدة البيانات
+          return database.ref('apps').push({
+            uid: user.uid,
+            name: appNameVal,
+            developer: developerNameVal,
+            iconUrl: iconUrl,
+            description: appDescriptionVal,
+            category: appCategoryVal,
+            fileUrl: fileUrl,
+            screenshots: screenshotsUrls
+          });
+        })
+        .then(() => {
           loadingModal.hide();
-          alert('حدث خطأ أثناء الحصول على رابط الأيقونة: ' + error.message);
+          alert('تم رفع التطبيق بنجاح!');
+          uploadForm.reset();
+        })
+        .catch((error) => {
+          loadingModal.hide();
+          alert('حدث خطأ: ' + error.message);
         });
-      }).catch((error) => {
-        loadingModal.hide();
-        alert('حدث خطأ أثناء رفع الأيقونة: ' + error.message);
-      });
     });
   </script>
 </body>
